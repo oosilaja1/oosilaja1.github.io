@@ -1,12 +1,12 @@
 # SOP — External Asset Attribution & Rating Disputes
 
-**Purpose:** make sure the security rating reflects assets the organization actually owns and operates.
+**Purpose:** make sure the RiskRecon rating reflects assets the organization actually owns and operates.
 **Owner:** Vulnerability Management · **Cadence:** baseline once, then monthly · **NIST:** CM-8, PM-5, RA-5
 
 
 ## 1. Export
-1. Export the attributed IPs, domains, and subdomains from each rating platform (BitSight, SecurityScorecard, RiskRecon).
-2. Merge them into one list and remove duplicates by IP and FQDN.
+1. Export the IPs, domains, and subdomains that RiskRecon attributes to the organization.
+2. Remove duplicates by IP and FQDN.
 
 ## 2. Reconcile
 Match each asset against these internal sources:
@@ -30,14 +30,14 @@ Match each asset against these internal sources:
 
 ## 4. Dispute (for "Not ours")
 1. Collect evidence: WHOIS and ASN records, cloud provider IP release confirmation, contract end dates, and a DNS history screenshot.
-2. Submit the dispute through each vendor's attribution or correction process.
+2. Submit the dispute to RiskRecon through its asset correction process.
 3. Record the dispute ID, submission date, and evidence location in the tracker.
-4. Follow up after 10 business days. Close the item only when the vendor removes the asset.
+4. Follow up after 10 business days. Close the item only when RiskRecon removes the asset.
 
 ## 5. Decommission (for "Owned – orphaned")
 1. Confirm there is no business need: owner sign-off, or 14 days of notice with no objection.
 2. Shut the service down, release the IP, and delete the DNS records.
-3. Watch the next vendor scan to confirm the asset is gone.
+3. Ask RiskRecon to retest, and confirm the asset no longer appears.
 
 ## 6. Prevent drift
 - New internet-facing assets must be registered with an owner **before** go-live.

@@ -1,20 +1,18 @@
-# Rating Factor Crosswalk — Vendors → NIST 800-53 / ISO 27001
+# Crosswalk — RiskRecon Domain → Qualys WAS Check → Controls
 
-How common external rating categories line up across platforms and map to controls. Vendor category names are paraphrased and grouped by theme; check each platform's current methodology for exact naming.
+How each kind of RiskRecon finding was validated and verified, and which controls the work provides evidence for. RiskRecon domain names are paraphrased; check the current RiskRecon methodology for exact naming.
 
-| Theme | BitSight (risk vector area) | SecurityScorecard (factor area) | RiskRecon (domain area) | NIST 800-53 Rev. 5 | ISO 27001:2022 Annex A |
-|---|---|---|---|---|---|
-| TLS & certificates | TLS/SSL configurations & certificates | Network security / encryption | Encryption | SC-8, SC-13, SC-17 | 8.24 |
-| Exposed services | Open ports | Network security | Network filtering | CM-7, SC-7 | 8.20, 8.22 |
-| Patching & EOL software | Patching cadence, server software | Patching cadence | Software patching | SI-2, RA-5, SA-22 | 8.8 |
-| Web application security | Web application headers | Application security | Web application security | SC-8, SI-10 | 8.26, 8.28 |
-| Email security | SPF / DKIM / DMARC | DNS health | Email security | SC-20, SI-8 | 8.20 |
-| DNS hygiene | DNSSEC & DNS records | DNS health | DNS security | SC-20, SC-21, CM-8 | 8.20 |
-| Asset attribution | Asset map / infrastructure | Digital footprint | Asset discovery | CM-8, PM-5 | 5.9 |
-| Compromise signals | Compromised systems | Malware / IP reputation | Threat intel | SI-3, SI-4, IR-4 | 8.7, 8.16 |
+| RiskRecon domain (paraphrased) | Typical finding | Validation & verification | NIST 800-53 Rev. 5 | ISO 27001:2022 |
+|---|---|---|---|---|
+| Web encryption | TLS 1.0/1.1, weak ciphers, expired / invalid certificate, no HTTPS redirect, no HSTS | **Qualys WAS**: SSL/TLS checks, certificate chain, redirect & HSTS headers | SC-8, SC-13, SC-17, SC-23 | 8.24 |
+| Web application security | Missing security headers, insecure cookies, XSS / injection | **Qualys WAS**: header & cookie checks, OWASP vulnerability tests | SI-10, SA-11, RA-5 | 8.26, 8.28, 8.29 |
+| Software patching | Outdated or end-of-life web server, CMS, framework | **Qualys WAS**: version / banner detection, plus owner confirmation of the upgrade | SI-2, SA-22, RA-5 | 8.8 |
+| Network filtering | RDP, SSH, database, or admin ports exposed | Port scan from an external vantage point | CM-7, SC-7 | 8.20, 8.22 |
+| Email security | Missing or weak SPF, DMARC not enforced | DNS / MX record lookup | SC-20, SI-8 | 8.20 |
+| Asset attribution | Asset not owned, or owned but orphaned | Inventory reconciliation; dispute or decommission | CM-8, PM-5 | 5.9 |
 
 ## How to use it
 
-- **Prioritize:** a finding that shows up on all three platforms affects every rating. Fix it first.
-- **Evidence:** cite the NIST control in the remediation ticket so closure doubles as audit evidence (CA-7 continuous monitoring).
-- **Third-party risk:** use the same crosswalk to answer customer security questionnaires consistently.
+- **Pick the right check:** web findings go through Qualys WAS. Network and email findings use the check listed.
+- **Evidence:** the validation scan, the verification rescan, and the RiskRecon retest result together form the audit trail for RA-5 / SI-2 / CA-7.
+- **Third-party risk:** use the same mapping to answer customer security questionnaires consistently.

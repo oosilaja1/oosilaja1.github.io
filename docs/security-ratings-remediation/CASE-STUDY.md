@@ -1,88 +1,93 @@
-# Case Study — External Attack Surface & Security Ratings Remediation
+# Case Study — External Attack Surface & RiskRecon Rating Remediation
 
 **Reuben Osilaja · Attack Surface & Vulnerability Management Lead**
-*Enterprise external footprint · BitSight · SecurityScorecard · RiskRecon*
+*Enterprise external footprint · RiskRecon · Qualys Web Application Scanning (WAS)*
 
-> **Sanitized case study.** No organization names, domains, IP ranges, or vendor portal data. Supporting figures in the dashboard and dataset are synthetic and illustrative; the headline outcome is the real program result.
-
+> **Sanitized case study.** No organization names, domains, IP ranges, or vendor portal data. Supporting figures in the dashboard and dataset are synthetic and illustrative. The headline outcome is the real program result.
 
 ## Outcome
 
-**Raised the organization's external security rating from D to A+ in six months** — by treating security ratings as a managed attack surface program rather than a score to argue about.
+**Raised the organization's RiskRecon security rating from D to A in six months.** I did it by running every external finding through one repeatable loop: validate, advise, fix, verify, retest.
 
 | Metric | Result |
 |---|---|
-| Security rating | **D → A+** in 6 months |
-| Ratings findings tracked to closure | Every finding owned, ticketed, and closed or formally dispositioned |
-| Misattributed assets | Disputed with the rating vendors or decommissioned — removing "phantom" risk from the score |
-| Reporting | Monthly rating trajectory and burn-down to leadership and third-party risk stakeholders |
-
+| RiskRecon security rating | **D → A** in 6 months |
+| Validation | Each web finding (HTTP/HTTPS) confirmed and diagnosed with **Qualys WAS** before going to the owner |
+| Verification | Each fix re-scanned with Qualys WAS **before** RiskRecon was asked to retest |
+| Closure | RiskRecon retests requested with evidence. The rating updated as findings cleared |
+| Reporting | Monthly grade trajectory and burn-down to leadership and third-party risk stakeholders |
 
 ## Challenge
 
-The organization's public-facing security rating had fallen to a **D**. That grade was visible to customers, partners, insurers, and procurement teams — so it was a **business problem**, not just a technical one. Third-party risk questionnaires were coming back flagged, and nobody owned the score.
+The organization's **RiskRecon rating had fallen to a D**. Customers, partners, insurers, and procurement teams use that grade to judge third-party risk, so it was a **business problem**, not just a technical one.
 
 Root causes:
 
-- **No asset ownership.** The rating vendors attributed hundreds of internet-facing assets to the organization. Many had no known owner; some were not the organization's at all.
-- **Hygiene debt at the edge.** Weak or expired TLS certificates, exposed management ports, end-of-life web servers, missing security headers, and incomplete SPF / DKIM / DMARC.
-- **Three platforms, three views.** BitSight, SecurityScorecard, and RiskRecon each scored differently, so teams received conflicting signals.
-- **No closure loop.** Fixes happened ad hoc, and nobody verified that the rating platform had picked the fix up.
+- **Findings without context.** RiskRecon reported issues on internet-facing assets, but the owners didn't know exactly what was wrong or how to fix it.
+- **No owner for many assets.** Some attributed hosts had no known owner. A few weren't the organization's at all.
+- **Edge hygiene debt.** Weak TLS, expired certificates, missing HTTPS redirects and HSTS, missing security headers, end-of-life web servers, exposed ports, and incomplete SPF / DMARC.
+- **No closure loop.** Even after a fix, the rating stayed the same until RiskRecon retested. Nobody was asking for that retest.
 
+## Approach — the remediation loop
 
-## Approach
+Every RiskRecon finding went through the same seven steps:
 
-I ran it as a six-month program in four phases.
+```
+1 Detect     RiskRecon flags an issue on an external asset
+2 Validate   Qualys WAS scan of the HTTP/HTTPS service confirms and diagnoses it
+3 Advise     Owner receives the evidence plus specific fix guidance and an SLA
+4 Fix        Owner remediates (config, certificate, header, patch, port closure)
+5 Verify     Qualys WAS rescan confirms the issue is gone
+6 Retest     Evidence sent to RiskRecon with a retest request
+7 Clear      RiskRecon retests, the finding clears, the rating updates
+```
 
-### Phase 1 — Baseline & attribution (Month 1)
-- Exported findings from **BitSight, SecurityScorecard, and RiskRecon** into one normalized tracker (platform, rating factor, asset, severity, owner, SLA, NIST 800-53 control).
-- Reconciled every attributed IP and domain against the internal asset inventory (CMDB, DNS zones, cloud accounts, certificate inventory).
-- Classified each asset as **Owned**, **Owned – orphaned**, or **Not ours (misattributed)**.
+### Phase 1 — Baseline & ownership (Month 1)
+- Exported every RiskRecon finding into one tracker (domain, finding, asset, severity, owner, SLA, NIST 800-53 control).
+- Reconciled RiskRecon's attributed assets against the internal inventory (DNS zones, cloud accounts, certificate inventory, CMDB).
+- Classified each asset as **owned & active**, **owned but orphaned**, or **not ours**, then disputed or decommissioned the last two groups.
 
-### Phase 2 — Quick wins & disputes (Months 1–2)
-- Filed **attribution disputes** with each vendor for misattributed IPs and domains, with evidence (WHOIS, ASN ownership, hosting contracts).
-- **Decommissioned orphaned assets**: dangling DNS records, retired marketing sites, forgotten test hosts.
-- Closed the fastest score-moving items first: expired certificates, open RDP/SSH/database ports, and missing DMARC records.
+### Phase 2 — Validate & advise with Qualys WAS (Months 1–4)
+- Ran **Qualys WAS** against each affected HTTP/HTTPS service to confirm the finding, rule out false positives, and pinpoint the cause: protocol and cipher support, certificate chain, redirect behavior, response headers, cookie flags, server banners, and application vulnerabilities.
+- Sent each owner a short **remediation advisory**: what was found, the evidence, the exact fix, and the deadline.
+- Severity SLAs: **Critical 7 days · High 15 · Medium 30 · Low 60**.
 
-### Phase 3 — Systemic remediation (Months 2–5)
-- Set **severity-based SLAs** (Critical 7 days · High 15 · Medium 30 · Low 60) with named owner teams (Network Engineering, Cloud Platform, App Owners, Messaging, Web).
-- Standardized a **TLS baseline** (TLS 1.2+, strong ciphers, HSTS) and a **web security header baseline** (CSP, X-Frame-Options, X-Content-Type-Options).
-- Retired or upgraded **end-of-life web servers and frameworks** on internet-facing hosts.
-- Enforced **SPF / DKIM / DMARC** across all sending domains, moving DMARC from `p=none` to `p=reject`.
+### Phase 3 — Verify & request retest (Months 2–6)
+- When an owner reported a fix, **rescanned with Qualys WAS** to confirm it before going to the vendor. Ports and email/DNS findings were confirmed with port checks and DNS lookups.
+- **Contacted RiskRecon** with the verification evidence and asked for a retest, so the rating updated on the next cycle instead of waiting for routine rescans.
+- Tracked each retest request until RiskRecon cleared the finding.
 
-### Phase 4 — Verify, govern, sustain (Months 5–6)
-- **Verified closure on the rating platform**, not just in the ticket. A finding was closed only after the vendor rescan cleared it.
-- Built a **monthly ratings scorecard** for leadership: grade trajectory, open findings burn-down, SLA adherence, and top risk factors.
-- Added **pre-launch checks** so new internet-facing assets are registered, owned, and compliant before go-live. This stops the grade from drifting back.
-
+### Phase 4 — Report & sustain (Months 4–6)
+- Gave leadership a monthly scorecard: grade trajectory, open-findings burn-down, SLA adherence, and the top RiskRecon domains.
+- Set TLS and security-header baselines at the edge, plus a pre-launch Qualys WAS check for new internet-facing sites, so the grade doesn't slide back.
 
 ## What made the difference
 
-1. **Attribution first.** A meaningful share of the "risk" belonged to assets the organization didn't own or no longer used. Disputing and retiring them moved the score faster than any patch.
-2. **One tracker, three vendors.** Normalizing all three platforms into one ledger removed conflicting priorities.
-3. **Closure means vendor-verified.** Closing tickets doesn't move a rating. Confirmed rescans do.
+1. **Validate before you escalate.** A Qualys WAS scan turned a vague rating finding into specific, evidence-backed fix guidance. Owners acted faster and false positives were caught early.
+2. **Verify before you ask for a retest.** RiskRecon only got retest requests for fixes already confirmed by rescan, so retests cleared on the first attempt.
+3. **Ask for the retest.** A fix doesn't move the rating until RiskRecon retests. Requesting it shortened the time from fix to grade change.
 4. **Ownership with SLAs.** Every finding had a team, a deadline, and a weekly review.
-
 
 ## Control alignment
 
 | Program activity | NIST 800-53 Rev. 5 |
 |---|---|
 | External asset inventory & attribution | CM-8, PM-5 |
-| Continuous external scanning & ratings monitoring | RA-5, CA-7 |
-| Patching & EOL retirement | SI-2, SA-22 |
-| TLS / certificate management | SC-8, SC-13, SC-17 |
+| Continuous external monitoring (RiskRecon) | CA-7, RA-5 |
+| Web application scanning & validation (Qualys WAS) | RA-5, SA-11 |
+| Flaw remediation & EOL retirement | SI-2, SA-22 |
+| TLS / certificate management | SC-8, SC-13, SC-17, SC-23 |
 | Port & service minimization | CM-7, SC-7 |
 | Email & DNS security | SC-20, SI-8 |
 | Third-party risk posture reporting | PM-9, SR-6 |
 
-ISO/IEC 27001:2022 Annex A alignment: 5.9 (inventory of assets), 5.22 (monitoring of supplier services), 8.8 (management of technical vulnerabilities), 8.20 (network security), 8.24 (use of cryptography).
-
+ISO/IEC 27001:2022 Annex A alignment: 5.9 (inventory of assets), 8.8 (management of technical vulnerabilities), 8.20 (network security), 8.24 (use of cryptography), 8.29 (security testing in development and acceptance).
 
 ## Artifacts
 
-- **Ratings remediation dashboard** — rating trajectory, burn-down, factor breakdown, closure methods
-- **Remediation playbook** — fix patterns by rating factor
+- **Remediation dashboard**: grade trajectory, workflow funnel, burn-down, domain breakdown
+- **Validation & retest SOP**: the Qualys WAS → owner → RiskRecon loop, step by step
+- **Remediation playbook**: fix patterns for each RiskRecon domain
 - **Asset attribution & dispute SOP**
-- **Rating factor → NIST 800-53 crosswalk**
-- **Synthetic findings dataset** (120 findings)
+- **Domain → Qualys WAS → NIST 800-53 crosswalk**
+- **Synthetic findings dataset**: 120 findings with every workflow date

@@ -1,6 +1,6 @@
-# Remediation Playbook — Security Rating Factors
+# Remediation Playbook — RiskRecon Domains
 
-Standard fixes for the findings that most often pull an external security rating down. Each finding is closed only when the **rating vendor's rescan confirms it**.
+Standard fixes for the RiskRecon findings that most often pull the rating down. Every web finding is **validated with Qualys WAS before the owner is advised** and **re-verified with a Qualys WAS rescan before RiskRecon is asked to retest**. A finding closes only when RiskRecon's retest clears it. The full loop is in the [Validation & Retest SOP](validation-and-retest-sop.md).
 
 
 ## 1. TLS / SSL configuration
@@ -12,7 +12,7 @@ Standard fixes for the findings that most often pull an external security rating
 - Add `Strict-Transport-Security: max-age=31536000; includeSubDomains`.
 - Apply the baseline at the load balancer, CDN, or WAF edge so it covers every host behind it.
 
-**Verify:** run an external TLS scanner, then wait for the vendor rescan.
+**Verify:** Qualys WAS rescan (protocols, ciphers, HSTS), then request a RiskRecon retest.
 
 
 ## 2. Expired, self-signed, or mismatched certificates
@@ -22,6 +22,8 @@ Standard fixes for the findings that most often pull an external security rating
 - Reissue certificates from a trusted CA and automate renewal (ACME or the cloud certificate manager).
 - Keep a certificate inventory with expiry alerts at 30, 14, and 7 days.
 - If the host is no longer needed, decommission it instead of renewing.
+
+**Verify:** Qualys WAS rescan of certificate validity and chain, then request a RiskRecon retest.
 
 
 ## 3. Exposed services / open ports
@@ -33,6 +35,8 @@ Standard fixes for the findings that most often pull an external security rating
 - Restrict any service that must stay exposed to known source IPs.
 - Add a cloud guardrail policy that blocks `0.0.0.0/0` on management ports.
 
+**Verify:** external port scan shows the port closed or filtered, then request a RiskRecon retest.
+
 
 ## 4. Unpatched / end-of-life software
 **Typical findings:** outdated web servers, CMS platforms, frameworks, or OS versions detected in banners.
@@ -42,6 +46,8 @@ Standard fixes for the findings that most often pull an external security rating
 - Upgrade to a supported version. If you can't, isolate the host behind a WAF and record a time-bound risk acceptance.
 - Suppress version banners as defense in depth. This is not a substitute for patching.
 - Add EOL dates to the asset register so upgrades are planned before support ends.
+
+**Verify:** Qualys WAS rescan shows the supported version (or no version disclosure plus owner confirmation), then request a RiskRecon retest.
 
 
 ## 5. Web application security headers
@@ -57,6 +63,8 @@ Referrer-Policy: strict-origin-when-cross-origin
 Set-Cookie: ...; Secure; HttpOnly; SameSite=Lax
 ```
 
+**Verify:** Qualys WAS rescan of response headers and cookie flags, then request a RiskRecon retest.
+
 
 ## 6. Email security — SPF / DKIM / DMARC
 **Owner:** Messaging · **SLA:** High 15d · **NIST:** SC-20, SI-8
@@ -66,6 +74,8 @@ Set-Cookie: ...; Secure; HttpOnly; SameSite=Lax
 - Sign outbound mail with DKIM (2048-bit keys).
 - Roll DMARC out in stages: `p=none` (monitor) → `p=quarantine` → `p=reject`, reviewing aggregate reports at each step.
 - Give parked, non-sending domains `v=spf1 -all` and `p=reject`.
+
+**Verify:** DNS lookup of the SPF and DMARC records, then request a RiskRecon retest.
 
 
 ## 7. DNS hygiene / dangling records
@@ -80,7 +90,7 @@ Set-Cookie: ...; Secure; HttpOnly; SameSite=Lax
 ## 8. Misattributed or orphaned assets
 **Owner:** Vulnerability Management · **SLA:** Medium 30d · **NIST:** CM-8, PM-5
 
-**Fix:** follow the [Asset Attribution & Dispute SOP](asset-attribution-sop.md). Dispute assets that aren't yours with evidence, and decommission the ones that are yours but unused.
+**Fix:** follow the [Asset Attribution & Dispute SOP](asset-attribution-sop.md). Dispute assets that aren't yours with RiskRecon, with evidence, and decommission the ones that are yours but unused.
 
 
 ## Prioritization rule
