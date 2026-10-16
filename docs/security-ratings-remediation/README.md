@@ -1,6 +1,6 @@
 # RiskRecon Security Rating Remediation Program
 
-A **sanitized reference implementation** of a program that raised an organization's **RiskRecon** security rating **from D to A in six months**. It uses **Qualys Web Application Scanning (WAS)** to validate findings, guide asset owners, verify fixes, and back up retest requests to RiskRecon.
+A **sanitized reference implementation** of a program that raised an organization's **RiskRecon** security rating **from D to A in six months**. The organization was also monitored on BitSight and SecurityScorecard; the RiskRecon workstream was led personally. It uses **Qualys Web Application Scanning (WAS)** to validate findings, guide asset owners, verify fixes, and back up retest requests to RiskRecon.
 
 > All data here is synthetic. Domains use the reserved `.example` suffix. No organization, vendor portal, or customer data is included.
 

@@ -1,7 +1,7 @@
 # Case Study — External Attack Surface & RiskRecon Rating Remediation
 
 **Reuben Osilaja · Attack Surface & Vulnerability Management Lead**
-*Enterprise external footprint · RiskRecon · Qualys Web Application Scanning (WAS)*
+*Enterprise external footprint · RiskRecon (led personally) · BitSight · SecurityScorecard · Qualys Web Application Scanning (WAS)*
 
 > **Sanitized case study.** No organization names, domains, IP ranges, or vendor portal data. Supporting figures in the dashboard and dataset are synthetic and illustrative. The headline outcome is the real program result.
 
@@ -16,6 +16,10 @@
 | Verification | Each fix re-scanned with Qualys WAS **before** RiskRecon was asked to retest |
 | Closure | RiskRecon retests requested with evidence. The rating updated as findings cleared |
 | Reporting | Monthly grade trajectory and burn-down to leadership and third-party risk stakeholders |
+
+## My role
+
+The organization was monitored on **three security rating platforms: BitSight, SecurityScorecard, and RiskRecon**. I worked across all three and **personally led the RiskRecon workstream** end to end: intake, Qualys WAS validation, owner advisories, fix verification, and retest requests with the vendor. Fixes driven through this loop, such as TLS, certificates, headers, EOL software, and exposed ports, also improved the organization's posture on BitSight and SecurityScorecard, since those platforms observe the same external assets.
 
 ## Challenge
 
