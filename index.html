@@ -87,6 +87,16 @@
     background:var(--bg-alt);border:1px solid var(--line);padding:7px 12px;border-radius:9px}
   .repo:hover{text-decoration:none;border-color:#c7d2e5}
   .repo.cta{background:var(--accent-dark);color:#fff;border-color:var(--accent-dark)}
+  .demo{display:block;position:relative;margin:4px 0 18px;border-radius:12px;overflow:hidden;
+    border:1px solid var(--line);box-shadow:var(--shadow);background:var(--navy)}
+  .demo img{display:block;width:100%;height:auto;transition:transform .35s ease,opacity .35s ease}
+  .demo:hover img{transform:scale(1.015);opacity:.92}
+  .demo .play{position:absolute;left:14px;bottom:14px;display:inline-flex;align-items:center;gap:8px;
+    background:var(--accent);color:#fff;font-weight:700;font-size:14px;padding:9px 15px;border-radius:10px;
+    box-shadow:0 6px 20px rgba(0,0,0,.35)}
+  .demo .live{position:absolute;right:14px;top:14px;font-size:11px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:#fff;background:rgba(22,163,74,.92);padding:4px 9px;border-radius:999px}
+  .demo:hover{text-decoration:none}
 
   /* Certs */
   .certgrid{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
@@ -192,7 +202,14 @@
         <li><b>External attack surface</b> — cyber-risk ratings via BitSight, RiskRecon, and SecurityScorecard.</li>
         <li><b>Executive reporting</b> — real-time, control-aligned posture and risk dashboards.</li>
       </ul>
+      <a class="demo" href="container-vuln-dashboard.html" aria-label="Open the interactive container vulnerability dashboard">
+        <img src="assets/dashboard-preview.jpg" width="1100" height="687" loading="lazy"
+             alt="Container Vulnerability Analytics Dashboard: severity breakdown, remediation status, and policy enforcement on a synthetic 240-cluster dataset">
+        <span class="live">Interactive</span>
+        <span class="play">📊 Explore the live dashboard →</span>
+      </a>
       <div class="repos">
+        <a class="repo cta" href="container-vuln-dashboard.html">📊 Live dashboard</a>
         <a class="repo cta" href="https://github.com/oosilaja1/container-vuln-management/blob/main/CASE-STUDY.md" target="_blank" rel="noopener">📄 Read the case study</a>
         <a class="repo" href="https://github.com/oosilaja1/container-vuln-management" target="_blank" rel="noopener">container-vuln-management</a>
         <a class="repo" href="https://github.com/oosilaja1/container-vuln-remediation-plan" target="_blank" rel="noopener">remediation-plan (CVRP)</a>
