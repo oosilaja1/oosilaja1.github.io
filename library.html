@@ -109,14 +109,15 @@ main{padding:40px 48px 80px;min-width:0}
 <script>
 // ---- Library manifest: every document is served from this site (docs/ folder) ----
 const LIB = [
-  { id:"security-ratings-remediation", name:"Security Ratings Remediation (D → A+)", blurb:"BitSight, SecurityScorecard & RiskRecon findings tracked to closure — rating raised D to A+ in six months.", docs:[
-    ["CASE-STUDY.md","Case study — D to A+ in six months"],
+  { id:"security-ratings-remediation", name:"RiskRecon Rating Remediation (D → A)", blurb:"RiskRecon findings validated and verified with Qualys WAS, then retested. Rating raised from D to A in six months.", docs:[
+    ["CASE-STUDY.md","Case study — D to A in six months"],
     ["README.md","Program overview"],
-    ["dashboard.html","Ratings remediation dashboard"],
-    ["remediation-playbook.md","Remediation playbook by rating factor"],
+    ["dashboard.html","Remediation dashboard"],
+    ["validation-and-retest-sop.md","Validation, verification & retest SOP"],
+    ["remediation-playbook.md","Remediation playbook by RiskRecon domain"],
     ["asset-attribution-sop.md","Asset attribution & dispute SOP"],
-    ["rating-factor-crosswalk.md","Rating factor → NIST / ISO crosswalk"],
-    ["synthetic-ratings-findings.csv","Synthetic ratings findings dataset"]
+    ["rating-factor-crosswalk.md","RiskRecon → Qualys WAS → NIST crosswalk"],
+    ["synthetic-ratings-findings.csv","Synthetic findings dataset"]
   ]},
   { id:"container-vuln-management", name:"Container Vulnerability Management", blurb:"Aqua handbook, SOP suite, RACI ownership model, and templates.", docs:[
     ["README.md","Program overview"],

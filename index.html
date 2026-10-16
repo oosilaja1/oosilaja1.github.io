@@ -345,27 +345,27 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     <article class="program">
       <div>
         <div class="p-num">Program 04</div>
-        <h3>External Attack Surface — Security Ratings Remediation</h3>
-        <p>Turned BitSight, SecurityScorecard, and RiskRecon findings into one owned, SLA-driven remediation program, raising the organization's external security rating from <b>D to A+ in six months</b>.</p>
-        <div class="kpis"><span class="kpi">Rating D → A+</span><span class="kpi">6 months</span><span class="kpi">3 rating platforms unified</span></div>
+        <h3>External Attack Surface — RiskRecon Rating Remediation</h3>
+        <p>Raised the organization's <b>RiskRecon security rating from D to A in six months</b> by running every external finding through one loop: validate with Qualys WAS, advise the owner, verify the fix, and ask RiskRecon to retest.</p>
+        <div class="kpis"><span class="kpi">RiskRecon D → A</span><span class="kpi">6 months</span><span class="kpi">Qualys WAS-verified fixes</span></div>
         <ul class="points">
-          <li><b>Attribution first</b>: reconciled vendor-attributed IPs and domains against inventory, disputed misattributed assets, and retired orphaned ones (CM-8, PM-5).</li>
-          <li><b>One tracker, three vendors</b>: normalized every finding by rating factor, owner, severity SLA, and NIST 800-53 control.</li>
-          <li><b>Edge hygiene at scale</b>: TLS and header baselines, closed exposed ports, EOL upgrades, and DMARC taken to <code>p=reject</code> (SC-8, CM-7, SI-2, SC-20).</li>
-          <li><b>Vendor-verified closure</b>: a finding closed only after the platform rescan cleared it, reported monthly to leadership.</li>
+          <li><b>Validate</b>: scanned each affected HTTP/HTTPS service with Qualys WAS to confirm the finding and pinpoint the cause: TLS, certificates, redirects/HSTS, headers, EOL versions (RA-5, SA-11).</li>
+          <li><b>Advise</b>: gave each owner evidence-backed fix guidance with a severity SLA (Critical 7d · High 15d · Medium 30d).</li>
+          <li><b>Verify</b>: rescanned with Qualys WAS once the owner reported the fix, before going back to the vendor (SI-2, CA-7).</li>
+          <li><b>Retest</b>: sent RiskRecon the evidence and asked for a retest so the rating updated, and disputed misattributed assets (CM-8).</li>
         </ul>
         <div class="links">
-          <a class="link-btn solid" href="library.html#security-ratings-remediation/dashboard.html">Ratings dashboard →</a>
+          <a class="link-btn solid" href="library.html#security-ratings-remediation/dashboard.html">Remediation dashboard →</a>
           <a class="link-btn" href="library.html#security-ratings-remediation/CASE-STUDY.md">Read the case study</a>
         </div>
         <div class="repos">
+          <a class="repo" href="library.html#security-ratings-remediation/validation-and-retest-sop.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12l4 4v12H4z"/></svg>validation-retest-sop</a>
           <a class="repo" href="library.html#security-ratings-remediation/remediation-playbook.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12l4 4v12H4z"/></svg>remediation-playbook</a>
-          <a class="repo" href="library.html#security-ratings-remediation/asset-attribution-sop.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12l4 4v12H4z"/></svg>attribution-sop</a>
           <a class="repo" href="library.html#security-ratings-remediation/rating-factor-crosswalk.md"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h12l4 4v12H4z"/></svg>nist-crosswalk</a>
         </div>
       </div>
       <div class="gallery">
-        <a class="shot" href="library.html#security-ratings-remediation/dashboard.html"><img src="assets/ratings-preview.jpg" alt="Security ratings remediation dashboard preview" loading="lazy"><div class="cap-tag">Rating trajectory D → A+<span>Interactive</span></div></a>
+        <a class="shot" href="library.html#security-ratings-remediation/dashboard.html"><img src="assets/ratings-preview.jpg?v=2" alt="RiskRecon rating remediation dashboard preview" loading="lazy"><div class="cap-tag">RiskRecon grade D → A<span>Interactive</span></div></a>
       </div>
     </article>
   </div>
@@ -376,7 +376,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
     <div>
       <div class="sec-label" style="padding-top:0">Document Library</div>
       <h2>Read the full artifacts — right here.</h2>
-      <p>Case studies, the security ratings playbook, the Aqua VM handbook, SOP suite, RACI model, CVRP with NIST / ISO / FedRAMP crosswalks, dashboards, and synthetic datasets. View-only.</p>
+      <p>Case studies, the RiskRecon remediation playbook, the Aqua VM handbook, SOP suite, RACI model, CVRP with NIST / ISO / FedRAMP crosswalks, dashboards, and synthetic datasets. View-only.</p>
     </div>
     <a class="btn btn-dark" href="library.html">Open the library →</a>
   </div>
@@ -407,7 +407,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
       <div><h2>Tools &amp; frameworks.</h2></div>
     </div>
     <div class="skills">
-      <div class="skill-group"><h4>Attack Surface &amp; Vulnerability</h4><div class="chips"><span>Qualys VMDR</span><span>Tenable Nessus</span><span>Wiz</span><span>Aqua Security</span><span>BitSight</span><span>RiskRecon</span><span>SecurityScorecard</span></div></div>
+      <div class="skill-group"><h4>Attack Surface &amp; Vulnerability</h4><div class="chips"><span>Qualys VMDR</span><span>Qualys WAS</span><span>Tenable Nessus</span><span>Wiz</span><span>Aqua Security</span><span>BitSight</span><span>RiskRecon</span><span>SecurityScorecard</span></div></div>
       <div class="skill-group"><h4>Container / Cloud Security</h4><div class="chips"><span>Kubernetes / AKS</span><span>Admission control</span><span>Runtime protection</span><span>CIS Benchmarks</span><span>CSPM</span><span>CWPP</span><span>CIEM</span><span>Azure</span><span>AWS</span><span>CI/CD security</span></div></div>
       <div class="skill-group"><h4>GRC &amp; Reporting</h4><div class="chips"><span>NIST 800-53</span><span>RMF</span><span>FedRAMP</span><span>ISO 27001</span><span>SSP / SAR / POA&amp;M</span><span>ConMon</span><span>Power BI</span><span>Splunk</span><span>Microsoft Sentinel</span></div></div>
     </div>
