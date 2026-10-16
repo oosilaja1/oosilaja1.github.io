@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Document Library — Reuben Osilaja</title>
+<meta name="description" content="Case studies, handbooks, SOPs, control crosswalks, and datasets from Reuben Osilaja's security programs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<style>
+:root{--ink:#0b1220;--ink-2:#111a2e;--ink-3:#1a2540;--paper:#fff;--paper-2:#f5f7fb;--line:#e3e8f0;--line-dark:#24304b;--text:#0f172a;--muted:#5b6478;--muted-dark:#9aa6bf;--accent:#22d3ee;--accent-ink:#0369a1;--mono:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;color:var(--text);background:var(--paper-2);-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:inherit;text-decoration:none}
+.nav{position:sticky;top:0;z-index:50;background:rgba(11,18,32,.92);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav .in{max-width:1400px;margin:0 auto;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700}
+.brand .mark{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#3b82f6);color:var(--ink);font-family:var(--mono);font-size:13px}
+.nav .back{color:#c9d3e6;font-size:14px;font-weight:500}
+.nav .back:hover{color:#fff}
+.menu-btn{display:none;background:none;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:6px 10px;font:600 13px Inter}
+
+.layout{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 64px)}
+aside{background:#fff;border-right:1px solid var(--line);padding:24px 16px 40px;position:sticky;top:64px;height:calc(100vh - 64px);overflow:auto}
+.lib-title{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);padding:0 10px 6px}
+.search{width:100%;margin:6px 0 18px;padding:9px 12px;border:1px solid var(--line);border-radius:9px;font:14px Inter;background:var(--paper-2)}
+.search:focus{outline:2px solid #bae6fd;border-color:var(--accent-ink)}
+.group{margin-bottom:18px}
+.group h4{font-size:12.5px;font-weight:700;color:var(--text);padding:6px 10px;display:flex;align-items:center;gap:8px}
+.group h4 .n{font-family:var(--mono);font-size:10.5px;color:var(--accent-ink);background:#e0f2fe;border-radius:5px;padding:1px 6px}
+.doc{display:flex;align-items:flex-start;gap:9px;padding:7px 10px;border-radius:8px;font-size:13.5px;color:#334155;cursor:pointer}
+.doc:hover{background:var(--paper-2)}
+.doc.active{background:#e0f2fe;color:var(--text);font-weight:600}
+.badge{flex:none;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.04em;padding:2px 5px;border-radius:4px;margin-top:3px;color:#fff;background:var(--ink-3)}
+.badge.csv{background:#047857}.badge.py{background:#7c3aed}.badge.dash{background:var(--accent-ink)}
+
+main{padding:40px 48px 80px;min-width:0}
+.crumbs{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:14px;display:flex;gap:8px;flex-wrap:wrap}
+.crumbs b{color:var(--accent-ink);font-weight:600}
+.paper{background:#fff;border:1px solid var(--line);border-radius:16px;padding:48px 56px;max-width:920px;box-shadow:0 10px 30px rgba(15,23,42,.05)}
+.paper.wide{max-width:none}
+.ro{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:24px;padding:4px 10px;border:1px solid var(--line);border-radius:999px}
+/* rendered markdown */
+.md{-webkit-user-select:none;user-select:none}
+.md h1{font-size:32px;letter-spacing:-.025em;line-height:1.2;margin-bottom:18px}
+.md h2{font-size:22px;letter-spacing:-.015em;margin:36px 0 12px;padding-top:20px;border-top:1px solid var(--line)}
+.md h3{font-size:17px;margin:26px 0 10px}
+.md p,.md li{font-size:15.5px;color:#334155}
+.md p{margin:12px 0}
+.md ul,.md ol{margin:12px 0 12px 22px}
+.md li{margin:5px 0}
+.md a{color:var(--accent-ink);font-weight:500;border-bottom:1px solid #bae6fd}
+.md strong{color:var(--text)}
+.md code{font-family:var(--mono);font-size:.86em;background:var(--paper-2);border:1px solid var(--line);padding:1px 5px;border-radius:5px}
+.md pre{background:var(--ink);color:#e2e8f0;border-radius:10px;padding:18px;overflow:auto;margin:16px 0}
+.md pre code{background:none;border:0;color:inherit;padding:0;font-size:13px}
+.md blockquote{border-left:3px solid var(--accent-ink);background:#f0f9ff;padding:10px 16px;margin:16px 0;border-radius:0 8px 8px 0}
+.md table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px;display:block;overflow-x:auto}
+.md th{background:var(--paper-2);text-align:left;font-weight:600;white-space:nowrap}
+.md th,.md td{border:1px solid var(--line);padding:9px 12px;vertical-align:top}
+.md hr{border:0;border-top:1px solid var(--line);margin:28px 0}
+.md img{max-width:100%}
+.data-meta{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.data-meta span{font-family:var(--mono);font-size:12px;background:var(--paper-2);border:1px solid var(--line);padding:4px 9px;border-radius:6px}
+.tbl-wrap{overflow:auto;max-height:70vh;border:1px solid var(--line);border-radius:10px}
+.tbl-wrap table{margin:0;display:table;font-size:12.5px}
+.tbl-wrap th{position:sticky;top:0;z-index:1}
+.dash-frame{width:100%;height:80vh;border:1px solid var(--line);border-radius:12px;background:#fff}
+.welcome-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:24px}
+.wcard{border:1px solid var(--line);border-radius:12px;padding:18px;cursor:pointer;transition:border-color .15s,transform .15s;background:#fff}
+.wcard:hover{border-color:var(--accent-ink);transform:translateY(-2px)}
+.wcard b{display:block;font-size:15px;margin-bottom:4px}
+.wcard small{color:var(--muted);font-size:13px}
+.err{color:#b91c1c}
+@media print{body *{display:none!important}body::after{content:"Printing is disabled for this document library.";display:block!important;padding:40px;font:16px Inter}}
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr}
+  aside{position:fixed;top:64px;left:0;width:85%;max-width:320px;z-index:40;transform:translateX(-100%);transition:transform .25s;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  aside.open{transform:none}
+  .menu-btn{display:inline-block}
+  main{padding:20px 16px 60px}
+  .brand{font-size:0;gap:0}.brand .mark{font-size:13px}.nav .back{font-size:13px}
+  .paper{padding:28px 20px}
+  .md h1{font-size:26px}
+}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="in">
+  <a href="index.html" class="brand"><span class="mark">RO</span>Reuben Osilaja</a>
+  <div style="display:flex;gap:16px;align-items:center">
+    <button class="menu-btn" id="menuBtn" aria-label="Show documents">Documents</button>
+    <a class="back" href="index.html">← Portfolio</a>
+  </div>
+</div></nav>
+
+<div class="layout">
+  <aside id="side">
+    <div class="lib-title">Document Library</div>
+    <input class="search" id="q" type="search" placeholder="Filter documents…" aria-label="Filter documents">
+    <div id="tree"></div>
+  </aside>
+  <main><div id="crumbs" class="crumbs"></div><div id="view"></div></main>
+</div>
+
+<script>
+// ---- Library manifest: every document is served from this site (docs/ folder) ----
+const LIB = [
+  { id:"container-vuln-management", name:"Container Vulnerability Management", blurb:"Aqua handbook, SOP suite, RACI ownership model, and templates.", docs:[
+    ["README.md","Program overview"],
+    ["CASE-STUDY.md","Case study — Attack Surface Management"],
+    ["aqua-vulnerability-management-handbook.md","Aqua Security VM Handbook"],
+    ["standard-operating-procedures.md","Standard Operating Procedures"],
+    ["raci-matrix.md","RACI matrix"],
+    ["remediation-ticket-template.md","Remediation ticket template"],
+    ["risk-acceptance-template.md","Risk acceptance / exception template"],
+    ["SAMPLE-DATA.md","Sample data guide"],
+    ["synthetic-findings.csv","Synthetic findings dataset"]
+  ]},
+  { id:"container-vuln-remediation-plan", name:"Container Vulnerability Remediation Plan (CVRP)", blurb:"15-section CVRP mapped to NIST 800-53, ISO 27001, and FedRAMP.", docs:[
+    ["README.md","CVRP overview"],
+    ["CVRP-template.md","CVRP template"],
+    ["nist-800-53-crosswalk.md","NIST 800-53 Rev. 5 crosswalk"],
+    ["iso-27001-crosswalk.md","ISO/IEC 27001:2022 crosswalk"],
+    ["fedramp-notes.md","FedRAMP notes"]
+  ]},
+  { id:"container-vulnerability-risk-analytics", name:"Container Vulnerability Risk Analytics", blurb:"Python risk scoring and KPI dashboard from scanner exports.", docs:[
+    ["README.md","Overview"],
+    ["dashboard.html","Risk analytics dashboard"],
+    ["risk_analytics.py","risk_analytics.py (source)"],
+    ["../container-vuln-management/synthetic-findings.csv","Input dataset"]
+  ]},
+  { id:"k8s-version-compliance-tracker", name:"Kubernetes Version-Compliance Tracker", blurb:"EOL / near-EOL tracking with a compliance gauge across clusters.", docs:[
+    ["README.md","Overview"],
+    ["dashboard.html","Version compliance dashboard"],
+    ["version_compliance.py","version_compliance.py (source)"],
+    ["clusters_synthetic_240.csv","240-cluster synthetic inventory"],
+    ["k8s_supported_versions.csv","Supported versions reference"]
+  ]},
+  { id:"grc-package", name:"GRC / ATO Authorization Package", blurb:"SSP / SAR / POA&M approach and the ATO case study.", docs:[
+    ["README.md","Package overview"],
+    ["CASE-STUDY.md","Case study — Authorization (ATO)"]
+  ]}
+];
+
+const REPO_IDS = LIB.map(g=>g.id);
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const typeOf = f => f.endsWith(".csv")?"csv":f.endsWith(".py")?"py":f.endsWith(".html")?"dash":"md";
+const label = {md:"DOC",csv:"DATA",py:"CODE",dash:"VIEW"};
+const norm = p => { const out=[]; p.split("/").forEach(s=>{ if(s===".."){out.pop()} else if(s && s!=="."){out.push(s)} }); return out.join("/"); };
+
+function buildTree(filter=""){
+  const f = filter.toLowerCase();
+  $("#tree").innerHTML = LIB.map(g=>{
+    const items = g.docs.filter(([p,t])=>!f || t.toLowerCase().includes(f) || g.name.toLowerCase().includes(f));
+    if(!items.length) return "";
+    return `<div class="group"><h4>${esc(g.name)} <span class="n">${items.length}</span></h4>${
+      items.map(([p,t])=>{const key=norm(g.id+"/"+p);const ty=typeOf(p);return `<a class="doc" href="#${key}" data-key="${key}" data-repo="${g.id}"><span class="badge ${ty}">${label[ty]}</span><span>${esc(t)}</span></a>`}).join("")
+    }</div>`;
+  }).join("");
+  markActive();
+}
+function markActive(){ const k=decodeURIComponent(location.hash.slice(1)); document.querySelectorAll(".doc").forEach(a=>a.classList.toggle("active",a.dataset.key===k)); }
+
+// Rewrite links so every document stays inside this site
+function rewriteLinks(root, base){
+  root.querySelectorAll("a[href]").forEach(a=>{
+    let h=a.getAttribute("href");
+    const gh=h.match(/^https:\/\/github\.com\/oosilaja1\/([^\/#?]+)(?:\/blob\/[^\/]+\/(.+))?/);
+    if(gh && REPO_IDS.includes(gh[1])){ a.setAttribute("href","#"+norm(gh[1]+"/"+(gh[2]||"README.md"))); return; }
+    if(/^(https?:|mailto:|#)/.test(h)){ if(/^https?:/.test(h)){a.target="_blank";a.rel="noopener"} return; }
+    if(/^LICENSE$/i.test(h)){ a.replaceWith(document.createTextNode(a.textContent)); return; }
+    let target = norm(base+"/"+h);
+    if(h.includes("governance/raci-matrix.md")) target="container-vuln-management/raci-matrix.md";
+    a.setAttribute("href","#"+target);
+  });
+}
+
+function parseCSV(text){
+  const rows=[];let row=[],cell="",q=false;
+  for(let i=0;i<text.length;i++){const c=text[i];
+    if(q){ if(c=='"'&&text[i+1]=='"'){cell+='"';i++} else if(c=='"'){q=false} else cell+=c; }
+    else if(c=='"') q=true; else if(c==','){row.push(cell);cell=""} else if(c=='\n'){row.push(cell);rows.push(row);row=[];cell=""} else if(c!='\r') cell+=c;
+  }
+  if(cell||row.length){row.push(cell);rows.push(row)}
+  return rows;
+}
+
+function findMeta(key){
+  for(const g of LIB) for(const [p,t] of g.docs) if(norm(g.id+"/"+p)===key) return {g,t};
+  const g=LIB.find(x=>key.startsWith(x.id+"/")); return g?{g,t:key.split("/").pop()}:null;
+}
+
+async function show(){
+  const key=decodeURIComponent(location.hash.slice(1));
+  markActive(); $("#side").classList.remove("open"); window.scrollTo(0,0);
+  if(!key){ return welcome(); }
+  const meta=findMeta(key);
+  if(!meta){ $("#view").innerHTML=`<div class="paper"><p class="err">Document not found.</p></div>`; return; }
+  const repoName=meta.g.name, base=key.split("/").slice(0,-1).join("/"), ty=typeOf(key);
+  $("#crumbs").innerHTML=`<a href="#">Library</a> / <b>${esc(repoName)}</b> / ${esc(meta.t)}`;
+  document.title = meta.t+" — Reuben Osilaja";
+  const url="docs/"+key;
+  if(ty==="dash"){
+    $("#view").innerHTML=`<div class="paper wide"><div class="ro">🔒 View only</div><iframe class="dash-frame" src="${url}" title="${esc(meta.t)}" sandbox="allow-scripts"></iframe></div>`; return;
+  }
+  $("#view").innerHTML=`<div class="paper"><p style="color:var(--muted)">Loading…</p></div>`;
+  let txt; try{ const r=await fetch(url); if(!r.ok) throw 0; txt=await r.text(); }catch(e){ $("#view").innerHTML=`<div class="paper"><p class="err">Could not load this document.</p></div>`; return; }
+  if(ty==="md"){
+    const html=DOMPurify.sanitize(marked.parse(txt));
+    $("#view").innerHTML=`<div class="paper"><div class="ro">🔒 View only</div><article class="md" id="doc">${html}</article></div>`;
+    rewriteLinks($("#doc"), base);
+  } else if(ty==="py"){
+    $("#view").innerHTML=`<div class="paper"><div class="ro">🔒 View only</div><article class="md"><h1>${esc(meta.t)}</h1><pre><code>${esc(txt)}</code></pre></article></div>`;
+  } else {
+    const rows=parseCSV(txt.trim()); const head=rows[0]||[], body=rows.slice(1); const LIMIT=200;
+    $("#view").innerHTML=`<div class="paper wide"><div class="ro">🔒 View only · synthetic data</div><article class="md"><h1>${esc(meta.t)}</h1>
+      <div class="data-meta"><span>${body.length} rows</span><span>${head.length} columns</span>${body.length>LIMIT?`<span>showing first ${LIMIT}</span>`:""}</div>
+      <div class="tbl-wrap"><table><thead><tr>${head.map(h=>`<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>${
+        body.slice(0,LIMIT).map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div></article></div>`;
+  }
+}
+
+function welcome(){
+  $("#crumbs").innerHTML="<b>Library</b>";
+  document.title="Document Library — Reuben Osilaja";
+  const total=LIB.reduce((n,g)=>n+g.docs.length,0);
+  $("#view").innerHTML=`<div class="paper wide"><article class="md"><h1>Document Library</h1>
+    <p>${total} sanitized artifacts from my security programs — case studies, handbooks, SOPs, control crosswalks, dashboards, and synthetic datasets. All documents are view-only.</p></article>
+    <div class="welcome-grid">${LIB.map(g=>`<a class="wcard" href="#${g.id}/${g.docs[0][0]}"><b>${esc(g.name)}</b><small>${esc(g.blurb)}</small><div class="data-meta" style="margin:12px 0 0"><span>${g.docs.length} items</span></div></a>`).join("")}</div></div>`;
+}
+
+// View-only deterrents (casual copying / saving)
+document.addEventListener("contextmenu",e=>{ if(e.target.closest("main")) e.preventDefault(); });
+document.addEventListener("copy",e=>{ if(e.target.closest && e.target.closest("main")) e.preventDefault(); });
+document.addEventListener("keydown",e=>{ if((e.ctrlKey||e.metaKey)&&["s","p"].includes(e.key.toLowerCase())) e.preventDefault(); });
+
+$("#q").addEventListener("input",e=>buildTree(e.target.value));
+$("#menuBtn").addEventListener("click",()=>$("#side").classList.toggle("open"));
+window.addEventListener("hashchange",show);
+buildTree(); show();
+</script>
+</body>
+</html>
