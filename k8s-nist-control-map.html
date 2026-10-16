@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kubernetes Security Control Map: NIST SP 800-53</title>
+<meta name="description" content="Interactive Kubernetes architecture diagram mapping each component to NIST SP 800-53 Rev. 5 controls.">
+<style>
+  :root{
+    --bg0:#070f1c; --bg1:#0b1a30; --panel:#0f2340; --panel2:#122a4c;
+    --line:rgba(255,255,255,.10); --ink:#eaf1fb; --muted:#9db3d0; --gold:#e7b980;
+    --AC:#5aa2ff; --AU:#b28cff; --CM:#e7b980; --CP:#9aa7bb; --IA:#4fd1c5; --IR:#ff8fa3;
+    --RA:#f4922f; --SA:#c7d36f; --SC:#3ccf8e; --SI:#ff6b6f; --SR:#e6c94f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Segoe UI",Helvetica,Arial,"DejaVu Sans",sans-serif;
+    background:radial-gradient(120% 90% at 85% -10%,rgba(79,143,202,.16),rgba(79,143,202,0) 55%),
+      linear-gradient(160deg,var(--bg0),var(--bg1));color:var(--ink);min-height:100vh;padding-bottom:60px}
+  a{color:var(--gold)}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 22px}
+  header{border-bottom:1px solid var(--line);background:rgba(7,15,28,.85)}
+  .hd{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;flex-wrap:wrap}
+  .hd h1{font-size:23px;font-weight:800;letter-spacing:-.3px}
+  .hd p{font-size:13.5px;color:var(--muted);margin-top:4px;max-width:640px}
+  .back{font-size:12.5px;font-weight:600;text-decoration:none;border:1px solid var(--line);padding:7px 12px;border-radius:999px;white-space:nowrap}
+
+  .filters{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 14px;align-items:center}
+  .filters .lbl{font-size:12.5px;color:var(--muted);margin-right:4px}
+  .chip{display:inline-flex;align-items:center;gap:7px;font:600 12.5px/1 inherit;font-family:inherit;color:var(--ink);
+    background:rgba(255,255,255,.04);border:1px solid var(--line);padding:7px 11px;border-radius:999px;cursor:pointer}
+  .chip i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .chip[aria-pressed="true"]{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4)}
+  .chip:focus-visible,.node:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+  .stage{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+  .diagram{background:linear-gradient(180deg,var(--panel),rgba(15,35,64,.7));border:1px solid var(--line);border-radius:16px;padding:10px;overflow-x:auto}
+  svg{display:block;width:100%;min-width:820px;height:auto}
+  .node{cursor:pointer}
+  .node rect.box{fill:#132d52;stroke:rgba(255,255,255,.16);stroke-width:1.2;transition:fill .15s,stroke .15s,opacity .2s}
+  .node:hover rect.box{fill:#173762}
+  .node.sel rect.box{stroke:var(--gold);stroke-width:2.2;fill:#1a3a68}
+  .node.dim{opacity:.22}
+  .node text.n{fill:var(--ink);font-size:14.5px;font-weight:700}
+  .node text.c{font-size:11.5px;font-weight:700}
+  .zone{fill:none;stroke:rgba(255,255,255,.14);stroke-dasharray:5 5}
+  .zone-l{fill:var(--muted);font-size:12.5px;font-weight:600}
+  .edge{stroke:rgba(157,179,208,.55);stroke-width:1.6;fill:none}
+  .edge.log{stroke-dasharray:4 4;stroke:rgba(178,140,255,.6)}
+  .elab{fill:var(--muted);font-size:11px}
+
+  .panel{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:16px;padding:18px;position:sticky;top:14px}
+  .panel h2{font-size:18px;margin-bottom:6px}
+  .panel .why{font-size:13px;color:var(--muted);line-height:1.55;margin-bottom:14px}
+  .ctl{display:grid;grid-template-columns:62px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+  .ctl .id{font-weight:800;font-size:13px}
+  .ctl .t{font-size:13px;font-weight:600}
+  .ctl .q{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.45}
+  .hint{font-size:12.5px;color:var(--muted)}
+
+  .tablecard{margin-top:16px;background:linear-gradient(180deg,var(--panel),rgba(15,35,64,.75));border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+  .tablecard h2{font-size:15px;margin-bottom:10px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:12px;color:var(--muted);font-weight:600;padding:8px 6px;border-bottom:1px solid var(--line)}
+  td{padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+  td .pill{display:inline-block;font-weight:700;font-size:12px;margin:0 8px 3px 0}
+  tr.dim{display:none}
+  .foot{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.6}
+
+  @media(max-width:980px){.stage{grid-template-columns:1fr}.panel{position:static}}
+  @media(max-width:560px){.hd h1{font-size:19px} th:nth-child(3),td:nth-child(3){display:none}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap hd">
+  <div>
+    <h1>Kubernetes security control map</h1>
+    <p>Each component of a Kubernetes cluster and its software supply chain, mapped to the NIST SP 800-53 Rev. 5 controls an assessor would test there. Select a component or filter by control family.</p>
+  </div>
+  <a class="back" href="./">&larr; Back to portfolio</a>
+</div></header>
+
+<div class="wrap">
+  <div class="filters" id="filters" role="group" aria-label="Filter by control family"><span class="lbl">Control family</span></div>
+
+  <div class="stage">
+    <div class="diagram"><svg id="svg" viewBox="0 0 1000 640" role="img" aria-label="Kubernetes architecture with NIST control mappings"></svg></div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+
+  <div class="tablecard">
+    <h2>Full mapping</h2>
+    <table>
+      <thead><tr><th>Component</th><th>Controls</th><th>What an assessor checks</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="foot">Control titles from NIST SP 800-53 Rev. 5. Container-specific guidance: NIST SP 800-190 and the CIS Kubernetes Benchmark.
+      Tooling is described generically (scanning engine, policy engine, SIEM) and applies to any vendor.</div>
+  </div>
+</div>
+
+<script>
+const FAM={AC:"Access control",AU:"Audit and accountability",CM:"Configuration management",CP:"Contingency planning",
+  IA:"Identification and authentication",IR:"Incident response",RA:"Risk assessment",SA:"System and services acquisition",
+  SC:"System and communications protection",SI:"System and information integrity",SR:"Supply chain risk management"};
+const CTL={
+  "AC-2":"Account Management","AC-3":"Access Enforcement","AC-4":"Information Flow Enforcement","AC-6":"Least Privilege",
+  "AU-2":"Event Logging","AU-6":"Audit Record Review, Analysis, and Reporting","AU-12":"Audit Record Generation",
+  "CM-2":"Baseline Configuration","CM-3":"Configuration Change Control","CM-6":"Configuration Settings","CM-7":"Least Functionality","CM-14":"Signed Components",
+  "CP-9":"System Backup","IA-2":"Identification and Authentication (Organizational Users)","IA-5":"Authenticator Management","IR-4":"Incident Handling",
+  "RA-3":"Risk Assessment","RA-5":"Vulnerability Monitoring and Scanning","SA-11":"Developer Testing and Evaluation","SA-22":"Unsupported System Components",
+  "SC-5":"Denial-of-Service Protection","SC-7":"Boundary Protection","SC-8":"Transmission Confidentiality and Integrity",
+  "SC-12":"Cryptographic Key Establishment and Management","SC-28":"Protection of Information at Rest","SC-39":"Process Isolation",
+  "SI-2":"Flaw Remediation","SI-4":"System Monitoring","SR-3":"Supply Chain Controls and Processes","SR-4":"Provenance"};
+
+// x,y = top-left; w=200,h=74
+const N=[
+ {id:"pipeline",name:"CI/CD pipeline",x:20,y:70,why:"Where images are built. Security gates here stop vulnerable or untested code before it ships.",
+  c:{"SA-11":"Security tests run on every build and failures block the release.","CM-3":"Pipeline and image changes go through review and approval.","SR-3":"Third-party base images and packages come from approved sources."}},
+ {id:"scan",name:"Image scanning",x:20,y:175,why:"Every image is scanned for known CVEs before it can be pushed or deployed.",
+  c:{"RA-5":"All images are scanned, on build and on a schedule, with results retained.","RA-3":"Findings are prioritized by exploitability and exposure, not CVSS alone.","SI-2":"Critical and high findings are fixed within defined SLAs."}},
+ {id:"registry",name:"Container registry",x:20,y:280,why:"The trusted store of approved images. Clusters should only pull from here.",
+  c:{"CM-14":"Images are signed, and signatures are verified before use.","SR-4":"Image provenance (who built it, from what source) is recorded.","AC-3":"Push and pull rights are restricted by role."}},
+ {id:"siem",name:"Logging and SIEM",x:20,y:500,why:"Central collection of API audit logs and runtime events for detection and response.",
+  c:{"AU-2":"The organization defines which cluster events must be logged.","AU-6":"Logs are reviewed and alerts are triaged on a set cadence.","SI-4":"Runtime and API activity is monitored for attacks and drift.","IR-4":"Container incidents follow a documented handling process."}},
+
+ {id:"admission",name:"Admission control",x:290,y:92,why:"The policy engine that approves or blocks every workload before it runs.",
+  c:{"CM-6":"Policies enforce CIS-aligned pod settings (no privileged, no host mounts).","CM-7":"Workloads that need unneeded capabilities are rejected.","CM-14":"Unsigned or unscanned images are blocked in production."}},
+ {id:"api",name:"API server",x:510,y:92,why:"The front door to the cluster. Every action, by people or automation, passes through it.",
+  c:{"IA-2":"Users authenticate through the enterprise identity provider with MFA.","AC-3":"Every request is authorized; anonymous access is disabled.","SC-8":"All API traffic is encrypted with TLS.","AU-12":"API audit logging is enabled and shipped to the SIEM."}},
+ {id:"etcd",name:"etcd datastore",x:730,y:92,why:"Holds all cluster state, including secrets. Compromise here means compromise of everything.",
+  c:{"SC-28":"etcd data is encrypted at rest.","SC-12":"Encryption keys are managed and rotated, ideally in an external KMS.","CP-9":"etcd is backed up and restores are tested."}},
+ {id:"rbac",name:"RBAC and accounts",x:290,y:198,why:"Who and what can do which actions in which namespaces.",
+  c:{"AC-2":"Accounts and service accounts are inventoried and reviewed periodically.","AC-6":"Roles grant least privilege; cluster-admin is tightly limited.","IA-5":"Service account tokens are short-lived and auto-mounting is disabled where not needed."}},
+ {id:"version",name:"Kubernetes version",x:510,y:198,why:"Running an end-of-life version means no more security patches for the whole cluster.",
+  c:{"SA-22":"No cluster runs an unsupported (EOL) Kubernetes version.","SI-2":"Version upgrades are tracked and completed before EOL.","CM-2":"An approved baseline version is documented for each environment."}},
+ {id:"secrets",name:"Secrets",x:730,y:198,why:"Credentials and keys used by workloads. Base64 encoding is not encryption.",
+  c:{"SC-28":"Secrets are encrypted at rest or held in an external vault.","IA-5":"Secrets are rotated and never stored in images or source code.","SC-12":"Keys protecting secrets are centrally managed."}},
+
+ {id:"kubelet",name:"Kubelet",x:290,y:378,why:"The agent on every node that starts containers on the API server's instructions.",
+  c:{"AC-3":"Kubelet API requires authentication and authorization; anonymous auth is off.","CM-6":"Kubelet settings follow the CIS Kubernetes Benchmark.","SC-8":"Kubelet to API server traffic uses TLS."}},
+ {id:"runtime",name:"Container runtime",x:510,y:378,why:"Runs containers in isolation and is the source of runtime security events.",
+  c:{"SC-39":"Containers are isolated (namespaces, seccomp, AppArmor/SELinux).","SI-4":"Runtime behavior is monitored for drift and malicious activity.","CM-7":"Unneeded Linux capabilities are dropped by default."}},
+ {id:"ingress",name:"Ingress",x:730,y:378,why:"The controlled entry point for outside traffic into cluster services.",
+  c:{"SC-7":"Only approved services are exposed; everything else stays internal.","SC-8":"External traffic terminates on TLS.","SC-5":"Rate limiting and WAF rules protect exposed services."}},
+ {id:"node",name:"Node OS",x:290,y:486,why:"The host operating system under every container. A host compromise reaches every pod on it.",
+  c:{"CM-6":"Nodes use a hardened, minimal OS image.","SI-2":"Node images are patched and rotated on a defined cycle."}},
+ {id:"pods",name:"Workloads (pods)",x:510,y:486,why:"Your applications. Least privilege inside the pod limits the blast radius of a breach.",
+  c:{"AC-6":"Containers run as non-root with read-only file systems where possible.","CM-7":"Pods include only what the application needs."}},
+ {id:"netpol",name:"Network policies",x:730,y:486,why:"Firewall rules between pods. The default in Kubernetes is that every pod can reach every other pod.",
+  c:{"SC-7":"Default-deny network policies are applied per namespace.","AC-4":"Only required pod-to-pod and egress flows are allowed."}}
+];
+const W=200,H=74;
+const fam=id=>id.split("-")[0];
+const svg=document.getElementById("svg"), NS="http://www.w3.org/2000/svg";
+const el=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e};
+const byId=Object.fromEntries(N.map(n=>[n.id,n]));
+
+// zones
+el("rect",{class:"zone",x:250,y:20,width:735,height:605,rx:18});
+el("text",{class:"zone-l",x:268,y:42}).textContent="Kubernetes cluster";
+el("rect",{class:"zone",x:270,y:58,width:695,height:232,rx:12});
+el("text",{class:"zone-l",x:288,y:80}).textContent="Control plane";
+el("rect",{class:"zone",x:270,y:310,width:695,height:296,rx:12});
+el("text",{class:"zone-l",x:288,y:366}).textContent="Worker nodes";
+el("text",{class:"zone-l",x:20,y:52}).textContent="Software supply chain";
+el("text",{class:"zone-l",x:20,y:482}).textContent="Monitoring";
+
+// edges
+const mid=(n,s)=>({l:[n.x,n.y+H/2],r:[n.x+W,n.y+H/2],t:[n.x+W/2,n.y],b:[n.x+W/2,n.y+H]})[s];
+const edge=(a,as,b,bs,cls,label)=>{const p=mid(byId[a],as),q=mid(byId[b],bs);
+  let d;
+  if(as==="r"&&bs==="l"){const mx=(p[0]+q[0])/2;d=`M${p[0]},${p[1]} H${mx} V${q[1]} H${q[0]}`}
+  else d=`M${p[0]},${p[1]} V${(p[1]+q[1])/2} H${q[0]} V${q[1]}`;
+  el("path",{class:"edge "+(cls||""),d,"marker-end":"url(#arr)"});
+  if(label){el("text",{class:"elab",x:(p[0]+q[0])/2+6,y:(p[1]+q[1])/2-6}).textContent=label}};
+const defs=el("defs",{});const m=el("marker",{id:"arr",viewBox:"0 0 10 10",refX:9,refY:5,markerWidth:7,markerHeight:7,orient:"auto-start-reverse"},defs);
+el("path",{d:"M0,0 L10,5 L0,10 z",fill:"rgba(157,179,208,.8)"},m);
+
+edge("pipeline","b","scan","t");
+edge("scan","b","registry","t");
+edge("registry","r","admission","l");
+edge("admission","r","api","l");
+edge("api","r","etcd","l");
+edge("api","b","kubelet","t");
+edge("kubelet","r","runtime","l");
+edge("runtime","b","pods","t");
+edge("ingress","b","netpol","t");
+el("path",{class:"edge log",d:"M290,560 H255 V537 H220","marker-end":"url(#arr)"});
+el("text",{class:"elab",x:120,y:600,"text-anchor":"middle"}).textContent="audit logs and runtime events";
+
+// nodes
+const gEls={};
+N.forEach(n=>{
+  const g=el("g",{class:"node",tabindex:0,role:"button","aria-label":n.name+": "+Object.keys(n.c).join(", ")});
+  el("rect",{class:"box",x:n.x,y:n.y,width:W,height:H,rx:10},g);
+  el("text",{class:"n",x:n.x+14,y:n.y+28},g).textContent=n.name;
+  let cx=n.x+14;
+  Object.keys(n.c).forEach(id=>{const t=el("text",{class:"c",x:cx,y:n.y+54,fill:`var(--${fam(id)})`},g);t.textContent=id;cx+=id.length*7.4+10});
+  g.addEventListener("click",()=>select(n.id));
+  g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(n.id)}});
+  gEls[n.id]=g;
+});
+
+// table
+const tb=document.getElementById("tbody");
+N.forEach(n=>{const tr=document.createElement("tr");tr.dataset.id=n.id;
+  tr.innerHTML=`<td><b>${n.name}</b></td><td>${Object.keys(n.c).map(id=>`<span class="pill" style="color:var(--${fam(id)})">${id}</span>`).join("")}</td><td style="color:var(--muted)">${n.why}</td>`;
+  tb.appendChild(tr)});
+
+// filters
+const used=[...new Set(N.flatMap(n=>Object.keys(n.c).map(fam)))].sort();
+const fbox=document.getElementById("filters");let active=null;
+const mk=(code,label)=>{const b=document.createElement("button");b.className="chip";b.type="button";b.setAttribute("aria-pressed",code===null?"true":"false");
+  b.innerHTML=(code?`<i style="background:var(--${code})"></i>`:"")+label;b.title=code?FAM[code]:"Show all components";
+  b.onclick=()=>{active=code;fbox.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b?"true":"false"));applyFilter()};fbox.appendChild(b)};
+mk(null,"All");used.forEach(f=>mk(f,f));
+
+function applyFilter(){N.forEach(n=>{const hit=!active||Object.keys(n.c).some(id=>fam(id)===active);
+  gEls[n.id].classList.toggle("dim",!hit);tb.querySelector(`tr[data-id="${n.id}"]`).classList.toggle("dim",!hit)});
+  if(active){const cur=N.find(n=>gEls[n.id].classList.contains("sel"));
+    if(!cur||gEls[cur.id].classList.contains("dim")){const first=N.find(n=>!gEls[n.id].classList.contains("dim"));if(first)select(first.id)}}}
+
+const panel=document.getElementById("panel");
+function select(id){const n=byId[id];
+  Object.values(gEls).forEach(g=>g.classList.remove("sel"));gEls[id].classList.add("sel");
+  panel.innerHTML=`<h2>${n.name}</h2><p class="why">${n.why}</p>`+
+    Object.entries(n.c).map(([cid,q])=>`<div class="ctl"><div class="id" style="color:var(--${fam(cid)})">${cid}</div>
+      <div><div class="t">${CTL[cid]}</div><div class="q">${q}</div></div></div>`).join("")}
+select("api");
+</script>
+</body>
+</html>

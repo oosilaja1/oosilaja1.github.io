@@ -97,6 +97,11 @@
   .demo .live{position:absolute;right:14px;top:14px;font-size:11px;font-weight:700;letter-spacing:.08em;
     text-transform:uppercase;color:#fff;background:rgba(22,163,74,.92);padding:4px 9px;border-radius:999px}
   .demo:hover{text-decoration:none}
+  .demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:-4px 0 18px}
+  .demo-grid .demo{margin:0}
+  .demo-grid .demo .play{font-size:12.5px;padding:7px 11px;left:10px;bottom:10px}
+  .demo-grid .demo .live{right:10px;top:10px}
+  @media(max-width:640px){.demo-grid{grid-template-columns:1fr}}
 
   /* Certs */
   .certgrid{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
@@ -189,7 +194,7 @@
 <section id="projects">
   <div class="wrap">
     <div class="eyebrow">Projects</div>
-    <h2 class="title">Two programs, evidenced end to end</h2>
+    <h2 class="title">Three programs, evidenced end to end</h2>
     <p class="lead">Each program is presented with sanitized artifacts and working tooling as evidence — read the case study, or explore the repositories.</p>
 
     <div class="project">
@@ -208,6 +213,20 @@
         <span class="live">Interactive</span>
         <span class="play">📊 Explore the live dashboard →</span>
       </a>
+      <div class="demo-grid">
+        <a class="demo" href="k8s-version-dashboard.html" aria-label="Open the Kubernetes version-compliance dashboard">
+          <img src="assets/k8s-version-preview.jpg" width="1100" height="687" loading="lazy"
+               alt="Kubernetes version-compliance dashboard: compliance score and Supported, Near-EOL, and EOL clusters on a synthetic 240-cluster estate">
+          <span class="live">Interactive</span>
+          <span class="play">⎈ K8s version compliance →</span>
+        </a>
+        <a class="demo" href="k8s-nist-control-map.html" aria-label="Open the Kubernetes to NIST 800-53 control map">
+          <img src="assets/k8s-nist-preview.jpg" width="1100" height="687" loading="lazy"
+               alt="Kubernetes architecture diagram with each component mapped to NIST SP 800-53 controls">
+          <span class="live">Interactive</span>
+          <span class="play">🧭 K8s → NIST control map →</span>
+        </a>
+      </div>
       <div class="repos">
         <a class="repo cta" href="container-vuln-dashboard.html">📊 Live dashboard</a>
         <a class="repo cta" href="https://github.com/oosilaja1/container-vuln-management/blob/main/CASE-STUDY.md" target="_blank" rel="noopener">📄 Read the case study</a>
@@ -230,6 +249,26 @@
       <div class="repos">
         <a class="repo cta" href="https://github.com/oosilaja1/grc-package/blob/main/CASE-STUDY.md" target="_blank" rel="noopener">📄 Read the case study</a>
         <a class="repo" href="https://github.com/oosilaja1/grc-package" target="_blank" rel="noopener">grc-package</a>
+      </div>
+    </div>
+
+    <div class="project">
+      <div class="ptag">Program 03</div>
+      <h3>Container Image Hardening — Remediation Evidence</h3>
+      <p class="summary">Scan, fix, and verify on real public images: rebasing nginx from an end-of-support Debian 11 base to a current Alpine base eliminated all 30 critical findings and cut total findings 81% (921 → 177), verified by rescan with Trivy.</p>
+      <ul>
+        <li><b>Scan</b> — baseline OS and package CVEs by severity (NIST 800-53 RA-5).</li>
+        <li><b>Root cause</b> — most findings traced to an end-of-support base image, so one fix cleared hundreds of CVEs.</li>
+        <li><b>Remediate and verify</b> — rebase, rebuild, and rescan to 0 critical before closing (SI-2, CA-7).</li>
+      </ul>
+      <a class="demo" href="image-hardening-dashboard.html" aria-label="Open the container image hardening before and after dashboard">
+        <img src="assets/image-hardening-preview.jpg" width="1100" height="687" loading="lazy"
+             alt="Before and after Trivy scan: nginx 1.21 with 30 critical findings versus nginx 1.29-alpine with 0 critical">
+        <span class="live">Interactive</span>
+        <span class="play">🛡️ See the before / after →</span>
+      </a>
+      <div class="repos">
+        <a class="repo cta" href="image-hardening-dashboard.html">📊 Before / after dashboard</a>
       </div>
     </div>
   </div>
