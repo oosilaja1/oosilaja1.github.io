@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Systems — Reuben Osilaja</title>
+<meta name="description" content="AI systems built by Reuben Osilaja for vulnerability management and AI governance: ExploitLens, a Copilot Studio AI Readiness Advisor, and a VM AI Prompt Library.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0b1220; --ink-2:#111a2e; --ink-3:#1a2540;
+  --paper:#ffffff; --paper-2:#f5f7fb; --line:#e3e8f0; --line-dark:#24304b;
+  --text:#0f172a; --muted:#5b6478; --muted-dark:#9aa6bf;
+  --accent:#22d3ee; --accent-2:#3b82f6; --accent-ink:#0369a1;
+  --ok:#34d399; --red:#dc2626; --orange:#ea580c; --amber:#ca8a04; --green:#16a34a; --grey:#64748b;
+  --radius:14px; --max:1160px;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--text);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.mono{font-family:var(--mono)}
+.nav{position:sticky;top:0;z-index:50;background:rgba(11,18,32,.82);backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;letter-spacing:-.01em}
+.brand .mark{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:var(--ink);font-family:var(--mono);font-size:13px;font-weight:600}
+.nav ul{display:flex;gap:28px;list-style:none}
+.nav ul a{color:#c9d3e6;font-size:14px;font-weight:500}
+.nav ul a:hover,.nav ul a.on{color:#fff}
+.nav .cta{font-size:13px;font-weight:600;color:var(--ink);background:var(--accent);padding:8px 14px;border-radius:8px}
+@media (max-width:820px){.nav ul{display:none}}
+
+.hero{position:relative;background:var(--ink);color:#fff;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:44px 44px;mask-image:radial-gradient(ellipse at 70% 30%,#000 20%,transparent 75%)}
+.hero .wrap{position:relative;z-index:1;padding-top:80px;padding-bottom:80px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(34,211,238,.3);background:rgba(34,211,238,.06);padding:6px 12px;border-radius:999px}
+.hero h1{font-size:clamp(36px,5vw,56px);line-height:1.06;letter-spacing:-.035em;font-weight:800;margin:20px 0 16px;max-width:900px}
+.hero h1 span{background:linear-gradient(90deg,var(--accent),#93c5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:18px;color:#b9c4d9;max-width:760px}
+.jump{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.jump a{font-size:14px;font-weight:600;padding:10px 14px;border-radius:9px;border:1px solid rgba(255,255,255,.18);color:#fff}
+.jump a:hover{border-color:var(--accent)}
+.principles{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line-dark);border-radius:14px;overflow:hidden;margin-top:40px}
+.principles div{background:var(--ink-2);padding:18px}
+.principles b{display:block;font-size:14.5px}
+.principles small{color:var(--muted-dark);font-size:13px}
+@media (max-width:900px){.principles{grid-template-columns:1fr 1fr}}
+
+section{padding:88px 0;border-top:1px solid var(--line)}
+section.alt{background:var(--paper-2)}
+.p-num{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--accent-ink);text-transform:uppercase}
+h2{font-size:clamp(28px,3.4vw,40px);line-height:1.15;letter-spacing:-.025em;font-weight:800;margin:8px 0 12px}
+.sub{color:var(--muted);font-size:17px;max-width:780px}
+.kpis{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 8px}
+.kpi{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--accent-ink);background:#e0f2fe;padding:6px 10px;border-radius:7px}
+.kpi.warn{color:#92400e;background:#fef3c7}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:36px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+.card h3{font-size:13px;font-family:var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink);margin-bottom:10px}
+.card p,.card li{font-size:15px;color:#334155}
+.card ul{padding-left:18px;display:grid;gap:6px}
+.card b{color:var(--text)}
+.challenges{display:grid;gap:12px}
+.ch{border:1px solid var(--line);border-left:3px solid var(--accent-ink);border-radius:10px;padding:14px 16px;background:#fff}
+.ch b{display:block;font-size:14.5px}
+.ch span{font-size:14.5px;color:#334155}
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+.shots .wide{grid-column:1/-1}
+@media (max-width:700px){.shots{grid-template-columns:1fr}}
+.shot{position:relative;display:block;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--ink);box-shadow:0 10px 30px rgba(15,23,42,.08);cursor:zoom-in}
+.shot img{width:100%;aspect-ratio:16/10.6;object-fit:cover;object-position:top}
+.shot .cap-tag{position:absolute;left:10px;bottom:10px;right:10px;display:flex;justify-content:space-between;gap:8px;background:rgba(11,18,32,.88);color:#fff;font-size:13px;font-weight:600;padding:9px 12px;border-radius:8px}
+.shot .cap-tag span{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+.links{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.link-btn{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:10px 14px;border-radius:9px;border:1px solid var(--line);background:#fff}
+.link-btn:hover{border-color:var(--accent-ink);background:#f0f9ff}
+.link-btn.solid{background:var(--ink);color:#fff;border-color:var(--ink)}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}
+.flow span{font-family:var(--mono);font-size:12px;background:var(--ink);color:#fff;padding:6px 10px;border-radius:7px}
+.flow i{font-style:normal;color:var(--muted)}
+
+/* Demo panels */
+.demo{margin-top:40px;background:var(--ink);color:#fff;border-radius:18px;padding:28px;border:1px solid var(--line-dark)}
+.demo-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.demo-head h3{font-size:20px;letter-spacing:-.01em}
+.demo-head small{color:var(--muted-dark);font-size:13px;display:block;margin-top:4px}
+.tag-live{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink);background:var(--accent);padding:5px 9px;border-radius:6px;text-transform:uppercase}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media (max-width:900px){.demo-grid{grid-template-columns:1fr}}
+.field{margin-bottom:14px}
+.field label{display:flex;justify-content:space-between;font-size:13.5px;color:#c9d3e6;margin-bottom:6px}
+.field label output{font-family:var(--mono);color:#fff}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select,.demo input[type=text]{width:100%;background:var(--ink-3);color:#fff;border:1px solid var(--line-dark);border-radius:8px;padding:9px 10px;font:inherit;font-size:14px}
+.toggles{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.toggles label{display:flex;align-items:center;gap:7px;font-size:13.5px;background:var(--ink-3);border:1px solid var(--line-dark);border-radius:8px;padding:7px 10px;cursor:pointer}
+.result{background:var(--ink-2);border:1px solid var(--line-dark);border-radius:14px;padding:22px}
+.verdict{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;padding:7px 12px;border-radius:8px}
+.score{font-size:48px;font-weight:800;letter-spacing:-.03em;line-height:1;margin:14px 0 4px}
+.bar{height:8px;background:var(--ink-3);border-radius:99px;overflow:hidden;margin:6px 0 16px}
+.bar i{display:block;height:100%;border-radius:99px;transition:width .25s}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13.5px}
+.meta div{background:var(--ink-3);border-radius:8px;padding:10px}
+.meta small{display:block;color:var(--muted-dark);font-size:11.5px;font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em}
+.why{margin-top:14px;font-size:14px;color:#c9d3e6;border-top:1px solid var(--line-dark);padding-top:12px}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.presets button,.qbtn,.tabs button{font:inherit;font-size:13px;font-weight:600;cursor:pointer;border-radius:8px;border:1px solid var(--line-dark);background:var(--ink-3);color:#dbe4f3;padding:7px 11px}
+.presets button:hover,.qbtn:hover,.tabs button:hover{border-color:var(--accent)}
+
+/* Assessment */
+.qlist{display:grid;gap:10px}
+.q{background:var(--ink-2);border:1px solid var(--line-dark);border-radius:10px;padding:12px 14px}
+.q p{font-size:14px;margin-bottom:8px}
+.q p b{font-family:var(--mono);color:var(--accent);margin-right:6px}
+.opts{display:flex;flex-wrap:wrap;gap:6px}
+.opts label{font-size:12.5px;background:var(--ink-3);border:1px solid var(--line-dark);border-radius:7px;padding:5px 9px;cursor:pointer}
+.opts input{display:none}
+.opts input:checked + span{color:var(--ink)}
+.opts label:has(input:checked){background:var(--accent);border-color:var(--accent);color:var(--ink)}
+.gap{background:var(--ink-3);border-radius:8px;padding:10px 12px;margin-top:8px;font-size:13.5px}
+.gap b{display:block;color:#fff}
+.gap .ctl{font-family:var(--mono);font-size:11.5px;color:var(--accent)}
+.sticky{position:sticky;top:84px;align-self:start}
+
+/* Prompt library */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.tabs button.on{background:var(--accent);color:var(--ink);border-color:var(--accent)}
+.pl-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:900px){.pl-grid{grid-template-columns:1fr}}
+pre{white-space:pre-wrap;font-family:var(--mono);font-size:12.5px;line-height:1.55;background:var(--ink-2);border:1px solid var(--line-dark);border-radius:12px;padding:16px;color:#dbe4f3;max-height:420px;overflow:auto}
+.pl-label{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-dark);margin-bottom:8px}
+.note{font-size:12.5px;color:var(--muted-dark);margin-top:14px}
+
+/* Governance */
+.gov{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px}
+@media (max-width:900px){.gov{grid-template-columns:1fr}}
+.gov .card h4{font-size:16px;margin-bottom:8px}
+.gov .ctl{font-family:var(--mono);font-size:12px;color:var(--accent-ink);margin-top:10px}
+
+/* Lightbox */
+.lb{position:fixed;inset:0;background:rgba(5,9,18,.92);display:none;align-items:center;justify-content:center;z-index:100;padding:24px;cursor:zoom-out}
+.lb.on{display:flex}
+.lb img{max-width:100%;max-height:92vh;border-radius:10px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+
+.contact{background:var(--ink);color:#fff;padding:72px 0}
+.contact .wrap{display:flex;justify-content:space-between;align-items:center;gap:30px;flex-wrap:wrap}
+.contact h2{color:#fff}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px;padding:12px 20px;border-radius:10px}
+.btn-primary{background:var(--accent);color:var(--ink)}
+.btn-ghost{border:1px solid rgba(255,255,255,.18);color:#fff}
+footer{background:var(--ink);color:var(--muted-dark);font-size:13px;border-top:1px solid var(--line-dark)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:22px;padding-bottom:22px}
+@media (max-width:560px){.wrap{padding:0 16px}.demo{padding:18px}.meta{grid-template-columns:1fr}}
+</style>
+</head>
+<body id="top">
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="index.html" class="brand"><span class="mark">RO</span>Reuben Osilaja</a>
+    <ul>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#projects">Programs</a></li>
+      <li><a href="ai-systems.html" class="on">AI Systems</a></li>
+      <li><a href="library.html">Library</a></li>
+      <li><a href="index.html#certs">Certifications</a></li>
+    </ul>
+    <a href="#contact" class="cta">Contact</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">Program 06 · AI Systems</span>
+    <h1>AI systems I've built for <span>vulnerability management &amp; AI governance.</span></h1>
+    <p class="lede">I build AI where it removes repetitive analyst work: deciding which CVEs are really exploitable, turning raw findings into the right message for each audience, and checking whether an organization is ready to roll out AI safely. Each system keeps a human in control and every output traceable to a source.</p>
+    <div class="jump">
+      <a href="#exploitlens">01 · ExploitLens →</a>
+      <a href="#copilot">02 · Copilot Studio agent →</a>
+      <a href="#prompts">03 · VM AI Prompt Library →</a>
+      <a href="#governance">How I govern AI →</a>
+    </div>
+    <div class="principles">
+      <div><b>Grounded</b><small>Answers come from NVD, CISA KEV, EPSS and approved docs, not model memory.</small></div>
+      <div><b>Explainable</b><small>Every verdict shows "why", so an analyst can defend it.</small></div>
+      <div><b>Human-in-the-loop</b><small>AI recommends; people approve risk decisions and changes.</small></div>
+      <div><b>Least privilege</b><small>Agents get only the data and tools the job needs.</small></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 01 EXPLOITLENS ============ -->
+<section id="exploitlens">
+  <div class="wrap">
+    <div class="p-num">AI System 01 · Live</div>
+    <h2>ExploitLens — exploitability analysis across every scanner</h2>
+    <p class="sub">A web app that imports vulnerability reports from cloud, container/Kubernetes, server and network scanners, checks every CVE against live threat intelligence, and tells the team what is actually exploitable, what to fix first, and how.</p>
+    <div class="kpis"><span class="kpi">6 scanner formats in one queue</span><span class="kpi">NVD · CISA KEV · EPSS</span><span class="kpi">Verdict + "why" + remediation</span><span class="kpi">Executive &amp; technical PDF · CSV</span></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>The problem</h3>
+        <p>Vulnerability teams drown in CVSS scores. Every scanner (Qualys, Tenable, Wiz, AquaSec, Trivy, Kubescape) exports a different format, so findings live in separate silos and the same CVE shows up several times. A CVSS 9.8 that nobody exploits gets the same urgency as a CVSS 7.5 that ransomware crews use every day. Owners get long, unprioritized lists and push back.</p>
+      </div>
+      <div class="card">
+        <h3>The solution</h3>
+        <ul>
+          <li><b>One queue:</b> drop CSV/JSON exports from any tool; findings are normalized, merged and de-duplicated.</li>
+          <li><b>Exploitability verdict:</b> Actively Exploited, Exploitation Likely, Exploitable – Conditions Apply, Low, or Insufficient Data.</li>
+          <li><b>Risk-based priority (P1–P3)</b> and SLA due dates from KEV status, EPSS, CVSS, internet exposure and asset criticality.</li>
+          <li><b>"Why this verdict"</b> in plain English, plus domain-specific remediation and "if you can't patch yet" compensating controls.</li>
+          <li><b>Reporting:</b> executive and technical PDFs, CSV export, dashboards by priority, domain and source tool.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>How I built it</h3>
+        <ul>
+          <li>Built as a working MVP with an AI app builder (Lovable), which let me design it as a practitioner and ship fast without being a full-time developer.</li>
+          <li>I designed the scoring and verdict logic, data sources, report layouts and remediation playbooks; the AI builder generated the code from my specifications.</li>
+          <li>Enrichment from <b>NVD</b> (CVSS, references), <b>CISA KEV</b> (known exploitation, ransomware use) and <b>EPSS</b> (probability of exploitation).</li>
+          <li>Knowledge base and CVE lookup, seeded demo data, and role-based access for named users only.</li>
+        </ul>
+        <div class="flow"><span>Scanner exports</span><i>→</i><span>Normalize &amp; dedupe</span><i>→</i><span>Enrich (NVD · KEV · EPSS)</span><i>→</i><span>Verdict &amp; score</span><i>→</i><span>Remediate &amp; report</span></div>
+      </div>
+      <div class="card">
+        <h3>Challenges &amp; how I solved them</h3>
+        <div class="challenges">
+          <div class="ch"><b>Every scanner speaks a different language</b><span>Mapped each tool's columns to one common finding model and de-duplicated by CVE + asset, so a CVE found by Qualys and Wiz is one finding, not two.</span></div>
+          <div class="ch"><b>Findings with no asset context</b><span>Added analysis-level defaults (internet-facing, asset criticality) that report columns can override; perimeter network devices are treated as internet-facing automatically.</span></div>
+          <div class="ch"><b>Trusting the verdict</b><span>Every verdict shows its evidence (KEV date, EPSS percentile, attack vector) so an analyst can defend it to an asset owner or auditor.</span></div>
+          <div class="ch"><b>Controlling who can use it</b><span>Access limited to approved users, with sign-in emails sent from my own domain rather than the build platform.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="shots">
+      <a class="shot wide" data-full="assets/exploitlens-dashboard.jpg"><img src="assets/exploitlens-dashboard.jpg" alt="ExploitLens dashboard showing actively exploited, ransomware-linked and past-SLA counts with priority and risk charts" loading="lazy"><div class="cap-tag">Dashboard: KEV, ransomware, SLA, priority and domain view<span>Screenshot</span></div></a>
+      <a class="shot" data-full="assets/exploitlens-analysis.jpg"><img src="assets/exploitlens-analysis.jpg" alt="ExploitLens analysis merging AquaSec, Kubescape, Qualys, Tenable, Trivy and Wiz findings" loading="lazy"><div class="cap-tag">6 scanners, one prioritized queue<span>Screenshot</span></div></a>
+      <a class="shot" data-full="assets/exploitlens-finding.jpg"><img src="assets/exploitlens-finding.jpg" alt="ExploitLens finding detail for Log4Shell with verdict reasoning and remediation" loading="lazy"><div class="cap-tag">"Why this verdict" + remediation<span>Screenshot</span></div></a>
+      <a class="shot wide" data-full="assets/exploitlens-import.jpg"><img src="assets/exploitlens-import.jpg" alt="ExploitLens new analysis screen for uploading CSV or JSON scanner exports" loading="lazy"><div class="cap-tag">Import any scanner export or paste CVE IDs<span>Screenshot</span></div></a>
+    </div>
+    <p class="note" style="color:var(--muted)">Screenshots use the app's built-in synthetic demo data. No client data is shown.</p>
+
+    <!-- Interactive demo: verdict engine -->
+    <div class="demo" id="verdict-demo">
+      <div class="demo-head">
+        <div><h3>Try it: exploitability verdict engine</h3><small>A simplified, in-browser model of how ExploitLens weighs threat intelligence and context. Change the inputs and watch the verdict, priority and SLA move.</small></div>
+        <span class="tag-live">Interactive</span>
+      </div>
+      <div class="presets">
+        <button data-p="log4j">Log4Shell on internet-facing gateway</button>
+        <button data-p="internal">High CVSS, internal, no exploit</button>
+        <button data-p="likely">Rising EPSS, not yet in KEV</button>
+        <button data-p="nodata">Brand-new CVE, no data</button>
+      </div>
+      <div class="demo-grid">
+        <div>
+          <div class="toggles">
+            <label><input type="checkbox" id="kev"> In CISA KEV</label>
+            <label><input type="checkbox" id="ransom"> Ransomware use</label>
+            <label><input type="checkbox" id="pub"> Public exploit</label>
+            <label><input type="checkbox" id="inet"> Internet-facing</label>
+            <label><input type="checkbox" id="nodata"> No NVD data yet</label>
+          </div>
+          <div class="field"><label>CVSS base score <output id="cvssO">7.5</output></label><input type="range" id="cvss" min="0" max="10" step="0.1" value="7.5"></div>
+          <div class="field"><label>EPSS probability <output id="epssO">0.10</output></label><input type="range" id="epss" min="0" max="1" step="0.01" value="0.10"></div>
+          <div class="field"><label>Asset criticality</label><select id="crit"><option value="0">Low</option><option value="4" selected>Medium</option><option value="7">High</option><option value="10">Critical</option></select></div>
+          <div class="field"><label>Asset domain</label><select id="dom"><option>Server/Endpoint</option><option>Cloud</option><option>Container/K8s</option><option>Network Device</option></select></div>
+        </div>
+        <div class="result">
+          <div id="vBadge" class="verdict"></div>
+          <div class="score" id="vScore">0</div>
+          <div class="bar"><i id="vBar"></i></div>
+          <div class="meta">
+            <div><small>Priority</small><b id="vPri"></b></div>
+            <div><small>SLA</small><b id="vSla"></b></div>
+            <div><small>First action</small><b id="vAct"></b></div>
+            <div><small>NIST 800-53</small><b id="vCtl">RA-5 · SI-2</b></div>
+          </div>
+          <div class="why"><b>Why this verdict:</b> <span id="vWhy"></span></div>
+        </div>
+      </div>
+      <p class="note">Illustrative model for this portfolio. The production app uses live NVD, CISA KEV and EPSS data and a richer rule set.</p>
+    </div>
+
+    <div class="links">
+      <a class="link-btn solid" href="https://exploitlens.myprovenacademy.com" target="_blank" rel="noopener">Open the live app ↗</a>
+      <a class="link-btn" href="library.html#ai-systems/CASE-STUDY.md">Read the full case study</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 COPILOT AGENT ============ -->
+<section id="copilot" class="alt">
+  <div class="wrap">
+    <div class="p-num">AI System 02 · Prototype</div>
+    <h2>AI Readiness Advisor — a Microsoft Copilot Studio agent</h2>
+    <p class="sub">An organization-facing agent built in Microsoft Copilot Studio that walks IT, security and compliance leaders through a Microsoft 365 Copilot readiness check, scores them, and maps the gaps to NIST 800-53 and the NIST AI RMF.</p>
+    <div class="kpis"><span class="kpi">10-question assessment</span><span class="kpi">Score /20 · green / amber / red</span><span class="kpi">NIST 800-53 + NIST AI RMF mapping</span><span class="kpi warn">Status: built, in testing</span></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>The problem</h3>
+        <p>Microsoft 365 Copilot can surface any file a user can already open. Organizations that switch it on without fixing oversharing, weak identity controls, missing labels and audit gaps turn years of permission drift into an instant data-exposure problem. Leaders need a fast, plain-language way to know whether they're ready and what to fix first.</p>
+      </div>
+      <div class="card">
+        <h3>The solution</h3>
+        <ul>
+          <li>Asks 10 questions one at a time across identity, admin access, oversharing, permissions hygiene, sensitivity labels, DLP, audit logging, baseline hardening, AI policy and AI ownership.</li>
+          <li>Scores the answers and rates readiness as Ready, Ready with gaps, or Not ready.</li>
+          <li>Returns the top 3 gaps ranked by risk, each with a one-line fix and its control mapping, plus a 30-day action plan.</li>
+          <li>Self-assessment only: it never asks for credentials or tenant data.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>How I built it</h3>
+        <ul>
+          <li>Built in <b>Microsoft Copilot Studio</b> inside my own Microsoft 365 tenant.</li>
+          <li>Wrote the agent's instructions as a controlled script: question order, scoring rules, risk ranking, control mappings and hard rules.</li>
+          <li>Isolated it in a dedicated development environment with its own Dataverse store, separate from the tenant's default environment.</li>
+          <li>Removed the default tools it didn't need (Microsoft 365 data access and open web search) so it can only run the assessment.</li>
+        </ul>
+        <div class="flow"><span>User answers</span><i>→</i><span>Scoring rules</span><i>→</i><span>Risk-ranked gaps</span><i>→</i><span>Controls + 30-day plan</span></div>
+      </div>
+      <div class="card">
+        <h3>Challenges &amp; how I solved them</h3>
+        <div class="challenges">
+          <div class="ch"><b>Default environment had no database</b><span>Agents need Microsoft Dataverse. I provisioned it, then followed Microsoft's guidance and moved the build to a dedicated environment, which is also better practice for separating development from production.</span></div>
+          <div class="ch"><b>Usage credits are enforced per environment</b><span>Testing needs Copilot Credits assigned to the environment. I set up the trial path so cost stays at zero during the prototype; this is the same cost control I'd advise clients to plan for.</span></div>
+          <div class="ch"><b>Agents start with more access than they need</b><span>New agents came with Microsoft 365 data access and web search switched on. I removed both, applying least privilege (AC-6) before any testing.</span></div>
+          <div class="ch"><b>Keeping answers on-script</b><span>Hard rules keep it inside scope, stop it from claiming to scan a tenant, and flag FedRAMP / GCC checks for federal users.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="shots">
+      <a class="shot wide" data-full="assets/copilot-agent.jpg"><img src="assets/copilot-agent.jpg" alt="Microsoft Copilot Studio build view of the AI Readiness Advisor agent with its instructions" loading="lazy"><div class="cap-tag">Copilot Studio build view: instructions, scoring and guardrails<span>Screenshot</span></div></a>
+    </div>
+
+    <!-- Interactive demo: readiness assessment -->
+    <div class="demo" id="readiness-demo">
+      <div class="demo-head">
+        <div><h3>Try it: the readiness assessment</h3><small>The same questions, scoring and control mapping the agent uses, running in your browser.</small></div>
+        <span class="tag-live">Interactive</span>
+      </div>
+      <div class="demo-grid">
+        <div class="qlist" id="qlist"></div>
+        <div class="result sticky">
+          <div class="pl-label">Readiness score</div>
+          <div class="score" id="rScore">0<span style="font-size:22px;color:var(--muted-dark)">/20</span></div>
+          <div class="bar"><i id="rBar"></i></div>
+          <div id="rBadge" class="verdict"></div>
+          <div class="pl-label" style="margin-top:18px">Top gaps (highest risk first)</div>
+          <div id="rGaps"><div class="gap">Answer the questions to see your gaps.</div></div>
+          <div class="pl-label" style="margin-top:18px">30-day plan</div>
+          <div id="rPlan" style="font-size:13.5px;color:#c9d3e6"></div>
+        </div>
+      </div>
+      <div class="presets" style="margin-top:16px;margin-bottom:0">
+        <button id="fillTypical">Load a typical mid-size org</button>
+        <button id="clearAll">Reset</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 PROMPT LIBRARY ============ -->
+<section id="prompts">
+  <div class="wrap">
+    <div class="p-num">AI System 03 · In use</div>
+    <h2>VM AI Prompt Library — one finding, the right message for every audience</h2>
+    <p class="sub">Seven reusable prompt templates that turn raw vulnerability data into communication people act on: engineer tickets, asset-owner notices, escalations, triage narratives, executive scorecards and stand-up prep.</p>
+    <div class="kpis"><span class="kpi">7 templates</span><span class="kpi">Multi-audience CVE reframing</span><span class="kpi">Escalation · triage · exec scorecard · stand-up</span></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>The problem</h3>
+        <p>Most remediation delays aren't technical; they're communication. The same CVE has to be explained differently to an engineer, an application owner, a director and an auditor, and analysts spend hours rewriting the same facts. Free-form AI chat makes it worse: inconsistent tone and invented details.</p>
+      </div>
+      <div class="card">
+        <h3>The solution &amp; design</h3>
+        <ul>
+          <li><b>Structured inputs:</b> CVE, asset, owner, verdict, SLA and evidence go in as fields, so the model works only from facts provided.</li>
+          <li><b>Audience presets:</b> each template fixes the tone, length and call to action for its reader.</li>
+          <li><b>Guardrails in the prompt:</b> "use only the data provided", "say 'unknown' instead of guessing", "cite KEV/EPSS/NVD as given".</li>
+          <li><b>Reusable:</b> saved as plain Markdown so any approved AI tool can run them.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="demo" id="prompt-demo">
+      <div class="demo-head">
+        <div><h3>Try it: reframe one CVE for four audiences</h3><small>Pick an audience to see the template and a sample output for the same Log4Shell finding.</small></div>
+        <span class="tag-live">Interactive</span>
+      </div>
+      <div class="tabs" id="plTabs"></div>
+      <div class="pl-grid">
+        <div><div class="pl-label">Prompt template</div><pre id="plPrompt"></pre></div>
+        <div><div class="pl-label">Sample output (synthetic data)</div><pre id="plOut"></pre></div>
+      </div>
+      <p class="note">Sample outputs use synthetic asset names and dates.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GOVERNANCE ============ -->
+<section id="governance" class="alt">
+  <div class="wrap">
+    <div class="p-num">How I govern AI</div>
+    <h2>Building AI is the easy part. Governing it is the job.</h2>
+    <p class="sub">The same control discipline I apply to vulnerability management, applied to AI systems, and the lens I bring to any organization rolling out Copilot or AI agents.</p>
+    <div class="gov">
+      <div class="card"><h4>Data exposure &amp; oversharing</h4><p>Fix permissions, labels and DLP before an AI assistant can index them. Agents get only the sources their job needs.</p><div class="ctl">AC-3 · AC-6 · AC-21 · SC-7 · AI RMF MAP</div></div>
+      <div class="card"><h4>Grounding &amp; accuracy</h4><p>Answers come from named, approved sources, and the "why" is shown so humans can verify before acting.</p><div class="ctl">SI-10 · RA-5 · AI RMF MEASURE</div></div>
+      <div class="card"><h4>Human approval</h4><p>AI drafts, ranks and recommends. People approve risk acceptance, exceptions and system changes.</p><div class="ctl">CM-3 · CA-7 · AI RMF MANAGE</div></div>
+      <div class="card"><h4>Audit &amp; accountability</h4><p>Unified audit logging, retention, and a named owner for AI risk and use policy.</p><div class="ctl">AU-2 · AU-11 · PL-4 · PM-2 · AI RMF GOVERN</div></div>
+      <div class="card"><h4>Environment separation</h4><p>Build and test agents in isolated environments; promote to production deliberately.</p><div class="ctl">CM-2 · SA-3 · SA-11</div></div>
+      <div class="card"><h4>Cost &amp; usage control</h4><p>Credits and capacity assigned per environment, monitored, with limits set before scaling.</p><div class="ctl">SA-9 · PM-3</div></div>
+    </div>
+    <div class="links">
+      <a class="link-btn solid" href="library.html#ai-systems/CASE-STUDY.md">Read the AI systems case study →</a>
+      <a class="link-btn" href="index.html#projects">Back to all programs</a>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact" style="border-top:0">
+  <div class="wrap">
+    <div><h2>Want this thinking on your team?</h2><p style="color:#b9c4d9;margin-top:10px;max-width:560px">Vulnerability management, attack surface management and GRC, with practical, governed AI built in.</p></div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn btn-primary" href="mailto:olukayode.osilaja@gmail.com">Email me</a>
+      <a class="btn btn-ghost" href="https://www.linkedin.com/in/reubenosilaja" target="_blank" rel="noopener">LinkedIn ↗</a>
+    </div>
+  </div>
+</section>
+<footer><div class="wrap"><span>© 2026 Reuben (Olukayode) Osilaja</span><a class="mono" href="index.html">← Portfolio home</a></div></footer>
+
+<div class="lb" id="lb"><img id="lbImg" alt=""></div>
+
+<script>
+// Lightbox
+document.querySelectorAll('.shot[data-full]').forEach(a=>a.addEventListener('click',()=>{lbImg.src=a.dataset.full;lbImg.alt=a.querySelector('img').alt;lb.classList.add('on')}));
+lb.addEventListener('click',()=>lb.classList.remove('on'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('on')});
+
+// ---------- Verdict engine ----------
+const $=id=>document.getElementById(id);
+const V={
+  "Actively Exploited":{bg:"#fee2e2",fg:"#b91c1c"},
+  "Exploitation Likely":{bg:"#ffedd5",fg:"#c2410c"},
+  "Exploitable – Conditions Apply":{bg:"#fef9c3",fg:"#a16207"},
+  "Low Exploitability":{bg:"#dcfce7",fg:"#15803d"},
+  "Insufficient Data":{bg:"#e2e8f0",fg:"#334155"}
+};
+const ACT={"Server/Endpoint":"Patch via patch management, reboot, rescan","Cloud":"Patch or redeploy the service; restrict exposure","Container/K8s":"Rebuild image on fixed base; redeploy; rescan","Network Device":"Upgrade firmware; restrict management interface"};
+function calc(){
+  const kev=$('kev').checked, rw=$('ransom').checked, pub=$('pub').checked, inet=$('inet').checked, nd=$('nodata').checked;
+  const cvss=+$('cvss').value, epss=+$('epss').value, crit=+$('crit').value, dom=$('dom').value;
+  $('cvssO').textContent=cvss.toFixed(1); $('epssO').textContent=epss.toFixed(2);
+  let verdict, why=[];
+  if(nd && !kev){verdict="Insufficient Data"; why.push("No NVD record or EPSS score yet, so treat as unknown and re-check within 72 hours.");}
+  else if(kev){verdict="Actively Exploited"; why.push("Listed in CISA KEV (confirmed exploitation in the wild)"+(rw?", with known ransomware use":"")+".");}
+  else if(epss>=0.3||pub){verdict="Exploitation Likely"; why.push((pub?"Public exploit code is referenced. ":"")+"EPSS "+epss.toFixed(2)+" indicates elevated probability of exploitation.");}
+  else if(cvss>=7){verdict="Exploitable – Conditions Apply"; why.push("CVSS "+cvss.toFixed(1)+" is high, but there's no evidence of exploitation; exploitability depends on configuration and reachability.");}
+  else {verdict="Low Exploitability"; why.push("Not in KEV, low EPSS ("+epss.toFixed(2)+") and moderate CVSS ("+cvss.toFixed(1)+").");}
+  let s = nd&&!kev ? 35 : cvss*4.5 + epss*20 + (kev?25:0) + (rw?5:0) + (pub?6:0) + (inet?10:0) + crit;
+  s=Math.max(0,Math.min(100,Math.round(s)));
+  if(inet) why.push("Internet-facing exposure raises urgency.");
+  if(crit>=7) why.push("Asset criticality is "+(crit==10?"critical":"high")+".");
+  const pri = s>=85?"P1 Critical":s>=70?"P2 High":s>=40?"P3 Medium":"P4 Low";
+  const sla = s>=85?"7 days":s>=70?"15 days":s>=40?"30 days":"90 days";
+  const c=V[verdict];
+  $('vBadge').textContent=verdict; $('vBadge').style.background=c.bg; $('vBadge').style.color=c.fg;
+  $('vScore').textContent=s; $('vBar').style.width=s+"%"; $('vBar').style.background=s>=85?"#dc2626":s>=70?"#ea580c":s>=40?"#ca8a04":"#16a34a";
+  $('vPri').textContent=pri; $('vSla').textContent=sla; $('vAct').textContent= verdict==="Insufficient Data"?"Monitor; re-check enrichment":ACT[dom];
+  $('vCtl').textContent = kev ? "RA-5 · SI-2 · SI-5 (KEV)" : "RA-5 · SI-2";
+  $('vWhy').textContent=why.join(" ");
+}
+const PRE={
+  log4j:{kev:1,ransom:1,pub:1,inet:1,nodata:0,cvss:10,epss:.94,crit:10,dom:"Server/Endpoint"},
+  internal:{kev:0,ransom:0,pub:0,inet:0,nodata:0,cvss:9.1,epss:.02,crit:4,dom:"Container/K8s"},
+  likely:{kev:0,ransom:0,pub:1,inet:1,nodata:0,cvss:8.1,epss:.46,crit:7,dom:"Cloud"},
+  nodata:{kev:0,ransom:0,pub:0,inet:1,nodata:1,cvss:0,epss:0,crit:7,dom:"Network Device"}
+};
+document.querySelectorAll('[data-p]').forEach(b=>b.addEventListener('click',()=>{const p=PRE[b.dataset.p];['kev','ransom','pub','inet','nodata'].forEach(k=>$(k).checked=!!p[k]);$('cvss').value=p.cvss;$('epss').value=p.epss;$('crit').value=p.crit;$('dom').value=p.dom;calc();}));
+['kev','ransom','pub','inet','nodata','cvss','epss','crit','dom'].forEach(id=>$(id).addEventListener('input',calc));
+PRE.log4j && (()=>{const p=PRE.log4j;['kev','ransom','pub','inet'].forEach(k=>$(k).checked=true);$('cvss').value=10;$('epss').value=.94;$('crit').value=10;})();
+calc();
+
+// ---------- Readiness assessment ----------
+const QS=[
+ ["Q1","Identity","Is MFA enforced for all users (Security defaults or Conditional Access)?","Enforce MFA for every account through Conditional Access or Security defaults.","IA-2",1],
+ ["Q2","Admin access","Are admin roles limited to a few named people, with a separate break-glass account?","Cut admin roles to named individuals and add a monitored break-glass account.","AC-6 · AC-2",1],
+ ["Q3","Oversharing","Have you reviewed SharePoint, OneDrive and Teams sites shared with \"Everyone\" or \"Anyone with the link\"?","Run an oversharing review and remove broad and anonymous links before Copilot indexes content.","AC-3 · AC-21",1],
+ ["Q4","Permissions hygiene","Do site owners review who has access at least quarterly?","Start quarterly access reviews for site owners.","AC-2(3) · AC-6(7)",1],
+ ["Q5","Data classification","Do you use Microsoft Purview sensitivity labels on documents and email?","Publish sensitivity labels and auto-label your most sensitive content first.","RA-2 · MP-3",2],
+ ["Q6","Data loss prevention","Are DLP policies on for sensitive data (PII, PHI, financial, CUI)?","Turn on DLP for PII, PHI, financial data and CUI, starting in audit mode.","SC-7 · AC-4",2],
+ ["Q7","Audit","Is unified audit logging on and retained for at least 90 days?","Enable unified audit logging with retention that matches your policy.","AU-2 · AU-11",3],
+ ["Q8","Baseline hardening","Have you applied Microsoft's Baseline security mode or Secure Score recommendations?","Apply Baseline security mode and the top Secure Score actions.","CM-6 · CM-7",3],
+ ["Q9","AI policy","Do you have a written acceptable-use policy for generative AI?","Publish a short generative-AI acceptable-use policy.","PL-4 · AI RMF GOVERN",3],
+ ["Q10","Ownership","Is a named person accountable for AI risk?","Name an AI governance owner or committee.","PM-2 · AI RMF GOVERN",3]
+];
+const OPTS=[["Yes",2],["Partial",1],["Not sure",1],["No",0]];
+const ql=$('qlist');
+QS.forEach((q,i)=>{const d=document.createElement('div');d.className='q';
+ d.innerHTML=`<p><b>${q[0]}</b>${q[2]}</p><div class="opts">${OPTS.map(o=>`<label><input type="radio" name="q${i}" value="${o[1]}"><span>${o[0]}</span></label>`).join('')}</div>`;ql.appendChild(d);});
+ql.addEventListener('change',score);
+function score(){
+  let tot=0,ans=0,gaps=[];
+  QS.forEach((q,i)=>{const r=document.querySelector(`input[name=q${i}]:checked`); if(r){ans++;const v=+r.value;tot+=v; if(v<2) gaps.push({q,v});}});
+  $('rScore').innerHTML=tot+'<span style="font-size:22px;color:var(--muted-dark)">/20</span>';
+  $('rBar').style.width=(tot*5)+'%';
+  const rating= ans<10?null: tot>=17?["Ready","#dcfce7","#15803d","#16a34a"]: tot>=11?["Ready with gaps","#fef3c7","#a16207","#ca8a04"]:["Not ready","#fee2e2","#b91c1c","#dc2626"];
+  $('rBar').style.background= rating?rating[3]:"#22d3ee";
+  if(rating){$('rBadge').textContent=rating[0];$('rBadge').style.background=rating[1];$('rBadge').style.color=rating[2];$('rBadge').style.display='inline-flex';}
+  else {$('rBadge').textContent=ans+" of 10 answered";$('rBadge').style.background="#1a2540";$('rBadge').style.color="#c9d3e6";$('rBadge').style.display='inline-flex';}
+  gaps.sort((a,b)=>a.q[5]-b.q[5]||a.v-b.v);
+  const top=gaps.slice(0,3);
+  $('rGaps').innerHTML= top.length? top.map(g=>`<div class="gap"><b>${g.q[0]} · ${g.q[1]}</b>${g.q[3]}<div class="ctl">NIST 800-53 ${g.q[4]}</div></div>`).join('') : `<div class="gap">${ans? "No gaps so far.":"Answer the questions to see your gaps."}</div>`;
+  $('rPlan').innerHTML= top.length? `<ul style="padding-left:18px">${top.map((g,i)=>`<li>Week ${i*1+1}${i==2?"–4":""}: ${g.q[3].split('.')[0]}.</li>`).join('')}</ul>` : "";
+}
+$('fillTypical').addEventListener('click',()=>{[2,1,0,0,1,0,2,1,0,0].forEach((v,i)=>{const el=document.querySelector(`input[name=q${i}][value="${v}"]`);if(el)el.checked=true;});score();});
+$('clearAll').addEventListener('click',()=>{document.querySelectorAll('#qlist input').forEach(i=>i.checked=false);score();});
+score();
+
+// ---------- Prompt library ----------
+const FACTS=`CVE: CVE-2021-44228 (Apache Log4j "Log4Shell")
+Asset: app-gw-01.corp.example (internet-facing, critical)
+Owner: Payments Platform team
+Verdict: Actively Exploited (CISA KEV, ransomware use: known)
+EPSS: 0.94 · CVSS: 10.0
+SLA: 7 days · due Oct 27 · status: overdue by 2 days
+Fix: upgrade log4j-core to 2.17.1+; interim: WAF rule + disable JNDI lookups`;
+const PL=[
+ {n:"Engineer ticket",p:`ROLE: You write remediation tickets for engineers.
+INPUT (use ONLY these facts):
+{{finding_facts}}
+TASK: Write a ticket with: title, impact (1 line),
+exact fix steps, interim mitigation, how to verify.
+RULES: No guessing. If a fact is missing, write
+"unknown". Keep under 120 words.`,
+ o:`TITLE: [P1] Upgrade log4j-core on app-gw-01 (CVE-2021-44228)
+
+IMPACT: Remote code execution on an internet-facing
+payments gateway; actively exploited (CISA KEV).
+
+FIX:
+1. Upgrade log4j-core to 2.17.1 or later.
+2. Rebuild and redeploy the service.
+
+INTERIM (if blocked): enable WAF rule for JNDI
+patterns; set log4j2.formatMsgNoLookups=true.
+
+VERIFY: Rescan app-gw-01 and attach the clean result.`},
+ {n:"Asset-owner notice",p:`ROLE: You notify a business asset owner.
+INPUT (use ONLY these facts):
+{{finding_facts}}
+TASK: Plain-English email: what's wrong, why it
+matters to the business, the deadline, and the
+single decision or action needed from them.
+RULES: No jargon without a 1-line explanation.
+Max 150 words. Polite, firm.`,
+ o:`Subject: Action needed by Oct 27 – critical fix on app-gw-01
+
+Hi Payments Platform team,
+
+Your gateway app-gw-01 runs a component (Log4j) with a
+flaw attackers are actively using, including ransomware
+groups. Because the gateway is internet-facing, it could
+let an attacker take control of the server.
+
+The fix is a routine library upgrade. Our 7-day deadline
+was Oct 27 and it's now overdue.
+
+What we need from you: confirm a change window in the
+next 48 hours, or approve the interim WAF protection
+today while the upgrade is scheduled.
+
+Thanks,
+Vulnerability Management`},
+ {n:"Escalation",p:`ROLE: You escalate an overdue critical finding.
+INPUT (use ONLY these facts):
+{{finding_facts}}
+{{history_of_contacts}}
+TASK: Escalation note to the owner's director:
+risk, timeline missed, options (fix / interim
+control / formal risk acceptance), ask.
+RULES: Factual, no blame. Under 120 words.`,
+ o:`To: Director, Payments Platform
+
+Overdue critical risk: app-gw-01 (internet-facing) is
+exposed to Log4Shell, which is actively exploited and
+used by ransomware groups. The 7-day SLA ended Oct 27.
+
+Options:
+1. Fix: library upgrade (low effort; needs a change window).
+2. Interim: WAF rule + disable JNDI lookups today.
+3. Formal risk acceptance with your sign-off and an end date.
+
+Ask: choose an option by end of day tomorrow.`},
+ {n:"Executive scorecard",p:`ROLE: You write a 3-line executive summary.
+INPUT: {{portfolio_metrics}} {{top_risks}}
+TASK: Headline, trend, the one decision needed.
+RULES: Business language. Numbers as given.
+No CVE IDs unless asked. Max 60 words.`,
+ o:`HEADLINE: 1 overdue critical exposure on an internet-
+facing payments system (known ransomware target).
+
+TREND: Critical findings down month over month;
+this is the only item past SLA.
+
+DECISION: Approve an emergency change window this week,
+or sign a time-boxed risk acceptance.`}
+];
+const tabs=$('plTabs');
+PL.forEach((t,i)=>{const b=document.createElement('button');b.textContent=t.n;b.onclick=()=>show(i);tabs.appendChild(b);});
+function show(i){[...tabs.children].forEach((b,j)=>b.classList.toggle('on',i===j));$('plPrompt').textContent=PL[i].p.replace('{{finding_facts}}',FACTS).replace('{{history_of_contacts}}','Contacted Oct 20 and Oct 25; no response.').replace('{{portfolio_metrics}}','Critical findings: 4 (last month 9).').replace('{{top_risks}}',FACTS);$('plOut').textContent=PL[i].o;}
+show(0);
+</script>
+</body>
+</html>
